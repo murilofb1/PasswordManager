@@ -1,0 +1,116 @@
+<resources>
+    <string name="fill_all_the_fields_first">Fill all the fields first</string>
+    <string name="fill_your_password_first">"Fill your password first"</string>
+    <string name="fill_your_password_confirmation_first">The password confirmation can\'t be empty</string>
+    <string name="fill_your_email_first">Fill your e-mail first</string>
+    <string name="login_error_generic">Error on logging in</string>
+
+
+    <string name="app_name">Password Generator</string>
+    <string name="txt_titulo_main">Main Passwords:</string>
+    <string name="title_activity_cadastrar_senha">CadastrarSenhaActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- RegisterPassword -->
+    <string name="title_activity_register_password">Register a new password</string>
+    <string name="txt_password_size">Password Size</string>
+    <string name="txt_upper_case_size">Number of uppercase letters</string>
+    <string name="txt_low_case_size">Number of lowercase letters</string>
+    <string name="txt_special_char_size">Number of special characters</string>
+    <string name="shuffle_password">Shuffle Password</string>
+    <string name="btn_cadastrar_senha">Register</string>
+
+    <string name="txt_select_site">Site:</string>
+    <string name="default_text">Default text</string>
+    <string name="masked_password">*******</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_email">E-mail</string>
+    <string name="sign_up">SignUp</string>
+    <string name="name">Name</string>
+    <string name="password_confirmation">Password confirmation</string>
+
+    <!-- MenuItens -->
+    <string name="menu_lockunlock">LockUnlock</string>
+
+    <!-- New Site Dialog -->
+    <string name="dialog_new_site_name">New site name</string>
+    <string name="txt_custom_image_hint">Click on the image to change it</string>
+
+    <!-- Login Activity -->
+    <string name="keep_login">Keep me logged</string>
+    <string name="forgot_password">Forgot my password</string>
+    <string name="btn_logar">Login</string>
+    <string name="already_have_an_account">I already have an account</string>
+    <string name="btn_voltar_login">Back to login screen</string>
+    <string name="register">Register</string>
+
+    <!-- EditPassword Activity -->
+    <string name="hint_site_name">Site Name</string>
+    <string name="hint_new_password">New password</string>
+
+    <!-- Settings Activity-->
+    <string name="title_activity_settings">Settings</string>
+    <string name="settings_logout">Exit</string>
+    <string name="settings_data">My data</string>
+    <!-- AccountInfo -->
+    <string name="title_activity_account_info">Account Info</string>
+    <string name="btn_delete_account">Delete account</string>
+    <!-- DeveloperInfo -->
+    <string name="title_activity_developer_info">Developer Info</string>
+    <string name="element_whats_title">WhatsApp</string>
+    <string name="element_gmail_title">Gmail</string>
+    <string name="element_github_title">GitHub</string>
+    <string name="element_linkedin_title">Linkedin</string>
+    <string name="about_page_description">
+        Meu nome é Murilo Francisco Bento, atualmente tenho 21 anos e estou cursando Sistemas de Informação. Esse é meu primeiro app que fiz como projeto pessoal.
+        Caso queira me conhecer mais basta acessar uma de minhas redes sociais abaixo.
+    </string>
+    <!-- DeletedPasswords -->
+    <string name="activity_deleted_passwords_title">Deleted Passwords</string>
+    <!-- SiteInfo Dialog -->
+    <string name="go_to_site"><u>Go to site</u></string>
+    <string name="hint_site_link">Site Link</string>
+    <string name="acc_info_name">Name:</string>
+    <string name="acc_info_email">E-mail:</string>
+    <string name="acc_info_password">Password:</string>
+    <string name="developer_info">About the developer</string>
+
+    <!-- BiometricPrompt -->
+    <string name="biometric_title_home">Unlock the App</string>
+    <string name="biometric_description_home">Your passwords are proctected from unauthorized people</string>
+    <string name="biometric_description_account_info">Unlock the app to edit your personal info</string>
+
+    <!-- Snackbar -->
+    <string name="snackbar_text">Deleting your password</string>
+
+
+    <!-- EditPassword -->
+    <!-- Toast -->
+    <string name="toast_invalidated">Fill all the fields before</string>
+    <string name="toast_load_new_icon">Wait until your new icon load</string>
+    <!-- SiteInfo Dialog -->
+    <string name="edt_password_dialog_title">Confirm alterations</string>
+    <string name="edt_password_dialog_message">Are you sure that you want to edit this password</string>
+    <string name="unable_to_retrieve_your_data">Unable to retrieve your data :(</string>
+    <string name="swipe_left_to_restore"><![CDATA[<-- Swipe Left to restore]]></string>
+    <string name="swipe_right_to_delete"><![CDATA[Swipe Right to delete -->]]></string>
+    <string name="Login">Login</string>
+    <string name="passwords_dont_match">The passwords don\'t match</string>
+    <string name="your_password">Your password</string>
+
+
+</resources>

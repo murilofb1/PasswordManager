@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="MainTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+
+        <item name="colorPrimaryVariant">@color/teal_200</item>
+        <item name="colorOnPrimary">@color/buttonTextColor</item>"
+        <item name="colorAccent">@color/purple_200</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple_500</item>
+        <item name="colorSecondaryVariant">@color/purple_700</item>
+        <item name="colorOnSecondary">@color/primary</item>
+        <!-- Status bar color. -->
+
+        <item name="android:statusBarColor">@color/newLogoBG</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MainTheme.NoActionBar" parent="MainTheme" >
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+</resources>

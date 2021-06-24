@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="EditText"></style>
+
+    <style name="EditText.NotSelectable">
+        <item name="android:selectable">false</item>
+        <item name="android:clickable">false</item>
+    </style>
+
+</resources>

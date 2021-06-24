@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Button">
+        <item name="cornerRadius">25dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
+    </style>
+
+    <style name="Button.Filled" parent="Button">
+        <item name="android:layout_height">50dp</item>
+        <item name="backgroundTint">@color/primary</item>
+    </style>
+
+    <style name="Button.Transparent" parent="Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Button.Refresh">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:tint">@color/white</item>
+        <item name="android:background">@drawable/round_button</item>
+    </style>
+
+</resources>
