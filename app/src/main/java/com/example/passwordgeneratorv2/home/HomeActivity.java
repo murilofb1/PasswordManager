@@ -1,10 +1,10 @@
 package com.example.passwordgeneratorv2.home;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,13 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
 import com.example.passwordgeneratorv2.R;
+import com.example.passwordgeneratorv2.adapters.NewAdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityHomeBinding;
 import com.example.passwordgeneratorv2.editPassword.EditPasswordView;
 import com.example.passwordgeneratorv2.firebase.PasswordsDB;
@@ -37,18 +36,11 @@ import com.example.passwordgeneratorv2.helpers.VibratorH;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.newPassword.NewPasswordActivity;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
 import com.example.passwordgeneratorv2.settings.SettingsActivity;
-import com.github.clans.fab.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -66,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
     private List<String> icons = new ArrayList<>();
 
     private HomeViewModel model;
-    private static AdapterPasswords adapterPasswords;
+    private static NewAdapterPasswords adapterPasswords = new NewAdapterPasswords();
     private ActivityHomeBinding binding;
     private boolean isUnlocked = false;
 
@@ -76,6 +68,8 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setClickListeners();
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xff1cbbb4));
+        getSupportActionBar().setTitle("Minhas Senhas");
 
         initializeComponents();
         initRecycler();
@@ -153,23 +147,29 @@ public class HomeActivity extends AppCompatActivity {
         model.getPasswordList().observe(this, passwords -> {
             adapterPasswords.updateList(passwords);
             //UPDATE THE VISIBLE PASSWORDS ARRAY
+            /*
             int newListSize = passwords.size();
+
             if (listSize < newListSize || listSize > newListSize) {
                 adapterPasswords.updateVisibleArray(newListSize);
                 this.listSize = newListSize;
             }
+
+             */
         });
-        Security.Companion.getAppUnlockStatus().observe(this, value -> {
-            if(menuItemLockUnlock != null) {
-                if (value) menuItemLockUnlock.setIcon(R.drawable.ic_open_padlock);
+        Security.Companion.getAppUnlockStatus().observe(this, bool -> {
+            if (menuItemLockUnlock != null) {
+                if (bool) menuItemLockUnlock.setIcon(R.drawable.ic_open_padlock);
                 else menuItemLockUnlock.setIcon(R.drawable.ic_padlock);
             }
-            isUnlocked = value;
+            adapterPasswords.updateUnlockStatus(bool);
+            isUnlocked = bool;
         });
     }
 
+
     private void initRecycler() {
-        adapterPasswords = new AdapterPasswords();
+        /*
         adapterPasswords.setOnRecyclerCLickListener(new AdapterPasswords.OnRecyclerItemClick() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -183,11 +183,32 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLongClick(int position) { }
+            public void onLongClick(int position) {
+            }
         });
+         */
+        /*
+        adapterPasswords.setOnRecyclerCLickListener(new NewAdapterPasswords.OnRecyclerItemClick() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onItemClick(int position) {
+                if (isUnlocked) {
+                    Password password = model.getPasswordList().getValue().get(position);
+                    showPasswordInfo(password);
+                } else {
+                    openBiometricAuth();
+                }
+            }
+
+            @Override
+            public void onLongClick(int position) {
+            }
+        });
+
+         */
         binding.recyclerHomePasswords.setAdapter(adapterPasswords);
         binding.recyclerHomePasswords.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        binding.recyclerHomePasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        //binding.recyclerHomePasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
 
@@ -206,13 +227,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_passwords_fragments, menu);
-        menuItemLockUnlock = menu.findItem(R.id.menuLockUnlock);
+        menuItemLockUnlock = menu.findItem(R.id.menuToggleLock);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menuLockUnlock) {
+        if (item.getItemId() == R.id.menuToggleLock) {
             if (isUnlocked) Security.Companion.turnLock(false);
             else openBiometricAuth();
         } else if (item.getItemId() == R.id.menuSettings) {

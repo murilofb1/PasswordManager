@@ -89,7 +89,7 @@ public class DeletedPasswords extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         new MenuInflater(this).inflate(R.menu.menu_passwords_fragments, menu);
         menu.findItem(R.id.menuSettings).setVisible(false);
-        menuLockUnlock = menu.findItem(R.id.menuLockUnlock);
+        menuLockUnlock = menu.findItem(R.id.menuToggleLock);
         if (AdapterPasswords.isUnlocked()) {
             menuLockUnlock.setIcon(R.drawable.ic_open_padlock);
         }
@@ -102,7 +102,7 @@ public class DeletedPasswords extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-        } else if (item.getItemId() == R.id.menuLockUnlock) {
+        } else if (item.getItemId() == R.id.menuToggleLock) {
             if (AdapterPasswords.isUnlocked()) {
                 lockPasswords();
             } else {

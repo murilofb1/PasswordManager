@@ -5,7 +5,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">16dp</item>
         <item name="android:layout_gravity">bottom|end</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
         <item name="android:backgroundTint">@color/primary</item>
+
         <item name="tintMode">add</item>
         <item name="borderWidth">0dp</item>
         <item name="fabSize">normal</item>

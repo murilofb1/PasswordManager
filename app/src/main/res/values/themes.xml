@@ -4,7 +4,7 @@
         <!-- Primary brand color. -->
 
         <item name="colorPrimaryVariant">@color/teal_200</item>
-        <item name="colorOnPrimary">@color/buttonTextColor</item>"
+        <item name="colorOnPrimary">@color/primaryDarker</item>"
         <item name="colorAccent">@color/purple_200</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/purple_500</item>

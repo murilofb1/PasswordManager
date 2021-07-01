@@ -1,22 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutHome"
-    android:background="@color/rippleColor"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/sliderBG"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/btnSeePsswd"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_password_visibility"
+        app:layout_constraintBottom_toBottomOf="@id/homeTitle"
+        app:layout_constraintEnd_toStartOf="@id/homeTitle"
+        app:layout_constraintHorizontal_bias="1"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/homeTitle" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/homeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MINHAS SENHAS"
+        android:textSize="22sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/btnLockPsswd"
+        app:layout_constraintStart_toEndOf="@id/btnSeePsswd"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:visibility="gone"
+        android:id="@+id/btnLockPsswd"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_open_padlock"
+        app:layout_constraintBottom_toBottomOf="@id/homeTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/homeTitle"
+        app:layout_constraintTop_toTopOf="@id/homeTitle" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHomePasswords"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_width="match_parent"
-        tools:listitem="@layout/recycler_passwords"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+
+        android:layout_height="0dp"
+        android:overScrollMode="never"
+        android:paddingStart="15dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/homeTitle"
+        tools:listitem="@layout/recycler_passwords" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddPassword"
+        android:clickable="true"
+        app:srcCompat="@drawable/fab_add"
         style="@style/FloatingActionButton"
-        android:src="@drawable/fab_add" />
+        android:pointerIcon="crosshair"
+        tools:ignore="MissingConstraints" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

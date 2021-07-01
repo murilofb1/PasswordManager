@@ -11,7 +11,7 @@
     <color name="logo_background_darker">#004a70</color>
     <color name="link_color">#0645AD</color>
 
-    <color name="buttonTextColor">#FF018786</color>
+    <color name="primaryDarker">#FF018786</color>
     <color name="primary">#7DF0D5</color>
     <color name="sliderBG">#D9EAE6</color>
     <color name="newLogoBG">#1cbbb4</color>

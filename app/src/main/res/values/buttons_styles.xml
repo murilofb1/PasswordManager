@@ -4,7 +4,7 @@
     <style name="Button">
         <item name="cornerRadius">25dp</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="android:textColor">@color/primaryDarker</item>
     </style>
 
     <style name="Button.Filled" parent="Button">
