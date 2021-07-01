@@ -1,10 +1,8 @@
 # Password Manager
-<p align="center">
-   <img align="center"  heigth ="40%" width="40%" src ="/app_prints/logo.jpg">
-</p>
 
 <p style="text-align: justify ">  
-Passwordu Generatoru é um app para android desenvolvido na linguagem Java que serve tanto para generenciar quanto para gerar novas senhas para sites, serviços e etc.</p>
+ Um Aplicativo desenvolvido para poder gerenciar as senhas de diversos apps e serviços.
+</p>
 
 ## Bibliotecas e API's utilizadas
 * [Firebase](https://firebase.google.com/)
