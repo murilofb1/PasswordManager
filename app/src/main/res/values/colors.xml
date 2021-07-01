@@ -13,5 +13,8 @@
 
     <color name="buttonTextColor">#FF018786</color>
     <color name="primary">#7DF0D5</color>
+    <color name="sliderBG">#D9EAE6</color>
     <color name="newLogoBG">#1cbbb4</color>
+    <color name="rippleColor">#42000000</color>
+
 </resources>

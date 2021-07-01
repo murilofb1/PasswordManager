@@ -22,7 +22,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             else -> null
         }
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            auth.loginWithEmailAndPassword(email, password).addOnCompleteListener {
+            val context = getApplication<Application>().baseContext
+            auth.loginWithEmailAndPassword(email, password,context).addOnCompleteListener {
                 if (it.isSuccessful) loginSuccess.value = true
                 else toastMessage.value = it.exception?.message
             }

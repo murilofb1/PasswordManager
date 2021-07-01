@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.authentication.AuthenticationActivity;
+import com.example.passwordgeneratorv2.firebase.FirebaseAuthentication;
 import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
-import com.example.passwordgeneratorv2.settings.options.AccountInfo;
+import com.example.passwordgeneratorv2.settings.options.account_info.AccountInfoActivity;
 import com.example.passwordgeneratorv2.settings.options.DeletedPasswords;
 
 
@@ -54,10 +55,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void setOnClick() {
         View.OnClickListener clickListener = v -> {
             if (v.getId() == R.id.btnDataInfo) {
-                startActivity(new Intent(getApplicationContext(), AccountInfo.class));
+                startActivity(new Intent(getApplicationContext(), AccountInfoActivity.class));
             }
             else if (v.getId() == R.id.btnLogOut) {
-                FirebaseHelper.signOutUser();
+                new FirebaseAuthentication().signOutUser(this);
                 startActivity(new Intent(getApplicationContext(), AuthenticationActivity.class));
                 finishAffinity();
             } else if (v.getId() == R.id.btnDeletedPasswords) {

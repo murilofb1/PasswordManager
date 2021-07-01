@@ -24,9 +24,11 @@ public class AdapterDeletedPasswords extends RecyclerView.Adapter<RecyclerView.V
     public static int SHOW_DELETE_MENU = 1;
     public static int SHOW_RESTORE_MENU = 2;
 
-    public AdapterDeletedPasswords(Context context, List<Password> passwordList) {
-        this.passwordList = passwordList;
-        this.context = context;
+    public AdapterDeletedPasswords(Context context) { this.context = context; }
+
+    public void updateList(List<Password> passwords) {
+        this.passwordList = passwords;
+        notifyDataSetChanged();
     }
 
     @Override

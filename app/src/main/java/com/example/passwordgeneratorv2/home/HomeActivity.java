@@ -1,12 +1,9 @@
 package com.example.passwordgeneratorv2.home;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.passwordgeneratorv2.R;
+import com.example.passwordgeneratorv2.databinding.ActivityHomeBinding;
 import com.example.passwordgeneratorv2.editPassword.EditPasswordView;
+import com.example.passwordgeneratorv2.firebase.PasswordsDB;
 import com.example.passwordgeneratorv2.helpers.Base64H;
+import com.example.passwordgeneratorv2.helpers.Security;
+import com.example.passwordgeneratorv2.helpers.VibratorH;
 import com.example.passwordgeneratorv2.models.Password;
-import com.example.passwordgeneratorv2.models.UserModel;
-import com.example.passwordgeneratorv2.newPassword.ActivityNewPassword;
+import com.example.passwordgeneratorv2.newPassword.NewPasswordActivity;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
 import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
 import com.example.passwordgeneratorv2.settings.SettingsActivity;
@@ -44,7 +45,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -53,55 +53,39 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class HomeActivity extends AppCompatActivity implements AdapterPasswords.OnRecyclerItemClick, Observer {
-
-    private FloatingActionButton fabAdicionarSenha;
-    private RecyclerView recyclerPasswords;
-
-    private HomeViewModel homeViewModel;
-    private static AdapterPasswords adapterPasswords;
+public class HomeActivity extends AppCompatActivity {
 
     private Executor executor;
     private static BiometricPrompt biometricPrompt;
     private static BiometricPrompt.PromptInfo promptInfo;
 
     private MenuItem menuItemLockUnlock;
-    private List<Password> passwordList;
     private int listSize = 0;
     private boolean isLoaded = false;
 
     private List<String> icons = new ArrayList<>();
 
+    private HomeViewModel model;
+    private static AdapterPasswords adapterPasswords;
+    private ActivityHomeBinding binding;
+    private boolean isUnlocked = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.loading_page);
-        getSupportActionBar().hide();
-        loadList();
-        UserModel.loadCurretUser();
-        finalDelete();
+        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setClickListeners();
+
+        initializeComponents();
+        initRecycler();
+
+        model = new ViewModelProvider(this).get(HomeViewModel.class);
+        addObservers();
+
     }
 
-    private void finalDelete() {
-        FirebaseHelper.getUserDatabaseReference().child("deletedPasswords").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    Password password = item.getValue(Password.class);
-                    Timestamp timeNow = new Timestamp(System.currentTimeMillis());
-                    if (timeNow.getTime() >= password.getDeletedTime()) {
-                        FirebaseHelper.getUserDatabaseReference().child("deletedPasswords").child(password.getSite()).removeValue();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
+/*
     private void loadUserIcons() {
         FirebaseHelper.getUserIconsReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -120,10 +104,12 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
         });
     }
 
+ */
+
     @Override
     protected void onStart() {
         super.onStart();
-        loadUserIcons();
+        //loadUserIcons();
         if (menuItemLockUnlock != null && AdapterPasswords.isUnlocked()) {
             menuItemLockUnlock.setIcon(R.drawable.ic_open_padlock);
         } else if (menuItemLockUnlock != null && !AdapterPasswords.isUnlocked()) {
@@ -131,21 +117,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
         }
     }
 
-    private void loadList() {
-        homeViewModel = new HomeViewModel();
-        homeViewModel.addObserver(this);
-        passwordList = homeViewModel.getPasswordList();
-    }
 
     private void initializeComponents() {
-        //RecyclerView
-        recyclerPasswords = findViewById(R.id.recyclerHomePassWords);
-        //FloatingActionButton
-        fabAdicionarSenha = findViewById(R.id.fabAdicionarSenha);
-        //HomeViewModel
-        homeViewModel.addObserver(this);
-        //AdapterPasswords
-        adapterPasswords = new AdapterPasswords(homeViewModel.getPasswordList(), this);
         //Executor
         executor = ContextCompat.getMainExecutor(this);
         //BiometricPrompt
@@ -159,8 +132,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                adapterPasswords.setUnlocked(true);
-                menuItemLockUnlock.setIcon(R.drawable.ic_open_padlock);
+                Security.Companion.turnLock(true);
+
             }
 
             @Override
@@ -176,11 +149,45 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
                 .build();
     }
 
-    private void configureRecycler() {
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerPasswords.setLayoutManager(manager);
-        recyclerPasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        recyclerPasswords.setAdapter(adapterPasswords);
+    private void addObservers() {
+        model.getPasswordList().observe(this, passwords -> {
+            adapterPasswords.updateList(passwords);
+            //UPDATE THE VISIBLE PASSWORDS ARRAY
+            int newListSize = passwords.size();
+            if (listSize < newListSize || listSize > newListSize) {
+                adapterPasswords.updateVisibleArray(newListSize);
+                this.listSize = newListSize;
+            }
+        });
+        Security.Companion.getAppUnlockStatus().observe(this, value -> {
+            if(menuItemLockUnlock != null) {
+                if (value) menuItemLockUnlock.setIcon(R.drawable.ic_open_padlock);
+                else menuItemLockUnlock.setIcon(R.drawable.ic_padlock);
+            }
+            isUnlocked = value;
+        });
+    }
+
+    private void initRecycler() {
+        adapterPasswords = new AdapterPasswords();
+        adapterPasswords.setOnRecyclerCLickListener(new AdapterPasswords.OnRecyclerItemClick() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onItemClick(int position) {
+                if (isUnlocked) {
+                    Password password = model.getPasswordList().getValue().get(position);
+                    showPasswordInfo(password);
+                } else {
+                    openBiometricAuth();
+                }
+            }
+
+            @Override
+            public void onLongClick(int position) { }
+        });
+        binding.recyclerHomePasswords.setAdapter(adapterPasswords);
+        binding.recyclerHomePasswords.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        binding.recyclerHomePasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
 
@@ -190,13 +197,10 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
 
 
     private void setClickListeners() {
-        View.OnClickListener clickListener = v -> {
-            if (v.getId() == R.id.fabAdicionarSenha) {
-                Intent intentCadastrarSenha = new Intent(this, ActivityNewPassword.class);
-                startActivity(intentCadastrarSenha);
-            }
-        };
-        fabAdicionarSenha.setOnClickListener(clickListener);
+        binding.fabAddPassword.setOnClickListener(view -> {
+            Intent intent = new Intent(this, NewPasswordActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -209,13 +213,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menuLockUnlock) {
-            if (AdapterPasswords.isUnlocked()) {
-                AdapterPasswords.setUnlocked(false);
-                menuItemLockUnlock.setIcon(R.drawable.ic_padlock);
-                adapterPasswords.notifyDataSetChanged();
-            } else {
-                openBiometricAuth();
-            }
+            if (isUnlocked) Security.Companion.turnLock(false);
+            else openBiometricAuth();
         } else if (item.getItemId() == R.id.menuSettings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
@@ -225,7 +224,9 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showPasswordInfo(Password password) {
+
         View passwordInfoView = getLayoutInflater().inflate(R.layout.dialog_password_info, null, false);
+
         AlertDialog builder = new AlertDialog.Builder(this).create();
 
         ImageView psswdInfoIcon = passwordInfoView.findViewById(R.id.psswdInfoIcon);
@@ -242,19 +243,8 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
                 AdapterPasswords.copyPassword(password.getPassword(), this);
                 Toast.makeText(this, "Your " + password.getSite() + " password was copied to clipboard", Toast.LENGTH_SHORT).show();
             } else if (v.getId() == R.id.psswdInfoFav) {
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
-                if (password.isFavorite()) {
-                    Log.i("DialogInfo", "isFavorite");
-                    FirebaseHelper.getUserPasswordsReference().child(password.getSite()).child("favorite").setValue(false);
-                    password.setFavorite(false);
-                    psswdInfoFav.setImageResource(R.drawable.ic_not_favorite);
-                } else {
-                    Log.i("DialogInfo", "isNOTFavorite");
-                    FirebaseHelper.getUserPasswordsReference().child(password.getSite()).child("favorite").setValue(true);
-                    password.setFavorite(true);
-                    psswdInfoFav.setImageResource(R.drawable.ic_favorite);
-                }
+                VibratorH vibratorH = new VibratorH(this);
+                vibratorH.shortVibration();
             } else if (v.getId() == R.id.psswdInfoEdit) {
                 Intent i = new Intent(this, EditPasswordView.class);
                 i.putExtra("extraPassword", password);
@@ -285,18 +275,22 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         if (delete.get()) {
-                            FirebaseHelper.deletePassword(password);
+                            new PasswordsDB().deletePassword(password);
+                            /*
                             boolean haveIcon = false;
                             for (String item : icons) {
                                 if (password.getSite().equals(item)) {
-                                    haveIcon = true;
+                                /   haveIcon = true;
                                     break;
                                 }
                             }
+
                             if (haveIcon) {
                                 FirebaseHelper.getUserIconsReference().child(password.getSite()).child("beingUsed").setValue(false);
                             }
                             FirebaseHelper.getUserPasswordsReference().child(password.getSite()).removeValue();
+
+                             */
                         }
                     }
                 });
@@ -316,8 +310,10 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
         } else {
             psswdInfoFav.setImageResource(R.drawable.ic_not_favorite);
         }
+
         psswdInfoSiteName.setText(password.getSite());
         psswdInfoPassword.setText(Base64H.decode(password.getPassword()));
+
         if (password.getIconLink().equals("")) {
             Glide.with(passwordInfoView).load(R.drawable.default_image).into(psswdInfoIcon);
         } else {
@@ -329,43 +325,5 @@ public class HomeActivity extends AppCompatActivity implements AdapterPasswords.
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onItemClick(int position) {
-        if (AdapterPasswords.isUnlocked()) {
-            Password password = homeViewModel.getPasswordList().get(position);
-            showPasswordInfo(password);
-        } else {
-            openBiometricAuth();
-        }
-
-    }
-
-    @Override
-    public void onLongClick(int position) {
-        Log.i("AppLog", "long");
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg.equals(HomeViewModel.ARG_PASSWORD_LIST)) {
-            if (!isLoaded) {
-                setContentView(R.layout.activity_home);
-                getSupportActionBar().show();
-                initializeComponents();
-                configureRecycler();
-                setClickListeners();
-                isLoaded = true;
-            }
-            adapterPasswords.notifyDataSetChanged();
-
-            int newListSize = homeViewModel.getPasswordList().size();
-
-            if (listSize < newListSize || listSize > newListSize) {
-                adapterPasswords.updateVisibleArray(homeViewModel.getPasswordList().size());
-                this.listSize = newListSize;
-            }
-        }
-    }
 
 }

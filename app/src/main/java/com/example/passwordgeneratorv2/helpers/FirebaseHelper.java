@@ -10,9 +10,7 @@ import androidx.annotation.NonNull;
 
 
 import com.example.passwordgeneratorv2.authentication.AuthenticationActivity;
-import com.example.passwordgeneratorv2.home.HomeActivity;
 import com.example.passwordgeneratorv2.models.Password;
-import com.example.passwordgeneratorv2.models.UserModel;
 import com.example.passwordgeneratorv2.models.WebsiteModel;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,17 +30,17 @@ public class FirebaseHelper {
     private static StorageReference rootStorageReference;
     private static DatabaseReference rootReference;
 
-    public static FirebaseAuth getFirebaseAuth() {
-        if (auth == null) {
-            auth = FirebaseAuth.getInstance();
-        }
-        return auth;
-    }
-
+/*
     public static void editName(String newName) {
         getUserDataReference().child("name").setValue(newName);
     }
 
+ */
+    /*
+    public static FirebaseAuth getFirebaseAuth() {
+        if (auth == null) auth = FirebaseAuth.getInstance();
+        return auth;
+    }
     public static void editEmail(String newEmail) {
         getUserDataReference().child("email").setValue(newEmail);
         getFirebaseAuth().getCurrentUser().updateEmail(newEmail);
@@ -53,6 +51,9 @@ public class FirebaseHelper {
         getFirebaseAuth().getCurrentUser().updatePassword(newPassword);
     }
 
+     */
+
+    /*
     private static DatabaseReference getRootDatabaseReference() {
         if (rootReference == null) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -62,21 +63,29 @@ public class FirebaseHelper {
         return rootReference;
     }
 
+     */
+
     // Referência ususário no realtime database
+    /*
     public static DatabaseReference getUserDatabaseReference() {
         final DatabaseReference userReference = getRootDatabaseReference()
-                .child("users")
+                .child()
                 .child(getFirebaseAuth().getUid());
         return userReference;
     }
 
-    //Referência das senhas do usuário
+     */
 
+    //Referência das senhas do usuário
+/*
     public static DatabaseReference getDefaultIconsReference() {
         final DatabaseReference iconReference = getRootDatabaseReference().child("default_icons");
         return iconReference;
     }
 
+ */
+
+    /*
     public static void loadDefaultIcons() {
         DatabaseReference reference = FirebaseHelper.getDefaultIconsReference();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -95,29 +104,19 @@ public class FirebaseHelper {
         });
     }
 
-    public static DatabaseReference getUserIconsReference() {
-        final DatabaseReference iconReference = getUserDatabaseReference().child("icons");
-        return iconReference;
-    }
+     */
 
-    public static DatabaseReference getUserPasswordsReference() {
-        String CHILD_PASSWORDS = "passwords";
-        DatabaseReference userPasswords = getUserDatabaseReference().child(CHILD_PASSWORDS);
-        return userPasswords;
-    }
-
-    public static DatabaseReference getUserDataReference() {
-        DatabaseReference dataReference = getUserDatabaseReference().child("userData");
-        return dataReference;
-    }
-
+    /*
     public static void deletePassword(Password password) {
         getUserDatabaseReference().child("deletedPasswords").child(password.getSite()).setValue(password);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         long deleteTime = timestamp.getTime() + 2629800000L;
         getUserDatabaseReference().child("deletedPasswords").child(password.getSite()).child("deletedTime").setValue(deleteTime);
     }
+    */
 
+
+    /*
     public static void deleteUser(Activity activity) {
         getUserDatabaseReference().child("customIconsPath").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -134,8 +133,6 @@ public class FirebaseHelper {
                         activity.startActivity(i);
                         activity.finishAffinity();
                         Log.i("deleteStatus", "success");
-                    } else {
-                        Log.i("deleteStatus", "error  " + task.getException().toString());
                     }
                 });
             }
@@ -149,51 +146,23 @@ public class FirebaseHelper {
 
     }
 
+     */
+
     // passar tabmém a activity para poder fechar a mesma quando a senha for cadastrada com sucesso
-    public static void registerPassword(Password password, Activity activity) {
-        getUserPasswordsReference()
-                .child(password.getSite())
-                .setValue(password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        getUserIconsReference().child(password.getSite()).child("beingUsed").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.getValue() != null) {
-                                    Log.i("FirebaseH", "not null Reference: " + snapshot.getValue());
-                                    getUserIconsReference().child(password.getSite()).child("beingUsed").setValue(true);
-                                }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
 
-                        Toast.makeText(activity, "Password registered", Toast.LENGTH_SHORT).show();
-                        activity.finish();
-                    } else {
-                        Toast.makeText(activity, "Something went wrong :(", Toast.LENGTH_SHORT).show();
-                    }
-
-                });
-    }
-
-    private static StorageReference getRootStorageReference() {
-        if (rootStorageReference == null) {
-            rootStorageReference = FirebaseStorage.getInstance().getReference();
-        }
-        return rootStorageReference;
-    }
 
     // Referência ususário no DatabaseStorage
+    /*
     private static StorageReference getUserStorageReference() {
         String userUID = getFirebaseAuth().getUid();
         StorageReference userStorage = getRootStorageReference().child("icons/" + userUID + "/");
         return userStorage;
     }
 
+     */
+/*
     // fazer upload da imagem
     public static void uploadSpinnerImage(String siteName, Uri imageUri, Activity activity) {
         StorageReference imageReference = getUserStorageReference().child("spinnerIcons/" + siteName.toLowerCase() + ".png");
@@ -215,6 +184,9 @@ public class FirebaseHelper {
         });
     }
 
+ */
+
+    /*
     public static void uploadEditImage(String siteName, Uri imageUri) {
         StorageReference imageReference = getUserStorageReference().child("edtIcons/" + siteName.toLowerCase() + ".png");
         imageReference.putFile(imageUri).addOnCompleteListener(task -> {
@@ -232,8 +204,6 @@ public class FirebaseHelper {
 
     }
 
-    public static void signOutUser() {
-        getFirebaseAuth().signOut();
-    }
+     */
 
 }

@@ -1,7 +1,11 @@
 package com.example.passwordgeneratorv2.settings.options;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
+import com.example.passwordgeneratorv2.firebase.PasswordsDB;
 import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
 import com.example.passwordgeneratorv2.models.Password;
 import com.google.firebase.database.DataSnapshot;
@@ -13,17 +17,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-class DeletedPasswordsViewModel extends Observable {
-    private List<Password> passwordList = new ArrayList<>();
-    private DatabaseReference deletedReference = FirebaseHelper.getUserDatabaseReference().child("deletedPasswords");
-    private ValueEventListener listenerDeletedPasswords;
-    public static int ARG_LIST_UPDATE = 0;
+class DeletedPasswordsViewModel extends ViewModel {
 
-    public List<Password> getPasswordList() {
-        return passwordList;
+    DeletedPasswordsViewModel() {
+        loadList();
     }
 
-    public void loadList() {
+    private MutableLiveData<List<Password>> passwordList = new MutableLiveData<>();
+    public LiveData<List<Password>> getPasswordList() { return passwordList; }
+
+    public static int ARG_LIST_UPDATE = 0;
+
+    private PasswordsDB passwordsDB = new PasswordsDB();
+
+    private void loadList() {
+
+        passwordsDB.loadDeletedPasswords(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Password> list = new ArrayList<>();
+                for (DataSnapshot item : snapshot.getChildren()) {
+                    list.add(item.getValue(Password.class));
+                }
+                passwordList.setValue(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        /*
         listenerDeletedPasswords = deletedReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -39,17 +63,10 @@ class DeletedPasswordsViewModel extends Observable {
 
             }
         });
+         */
     }
 
-    public void removeListener() {
-        deletedReference.removeEventListener(listenerDeletedPasswords);
+    public void detachListeners() {
+        passwordsDB.removeAllListeners();
     }
-
-
-    private void notifyUpdates(Object arg) {
-        setChanged();
-        notifyObservers(arg);
-    }
-
-
 }

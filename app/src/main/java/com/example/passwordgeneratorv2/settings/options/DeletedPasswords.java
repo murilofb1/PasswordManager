@@ -17,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,21 +26,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.AdapterDeletedPasswords;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
+import com.example.passwordgeneratorv2.firebase.PasswordsDB;
 import com.example.passwordgeneratorv2.models.Password;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.Executor;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 
-public class DeletedPasswords extends AppCompatActivity implements Observer {
+public class DeletedPasswords extends AppCompatActivity {
     private RecyclerView recyclerDeletedPasswords;
-    private DeletedPasswordsViewModel deletedHelper;
-    private AdapterDeletedPasswords adapterPasswords;
+    private DeletedPasswordsViewModel model;
+    private AdapterDeletedPasswords adapter;
     private MenuItem menuLockUnlock;
     private Password deletedPassword = null;
     private int deletedPasswordPosition;
@@ -50,37 +49,40 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deleted_passwords);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toast = new Toast(this);
-        deletedHelper = new DeletedPasswordsViewModel();
 
-        deletedHelper.addObserver(this);
-        deletedHelper.loadList();
-        //Configuring Recycler
+        toast = new Toast(this);
+        model = new ViewModelProvider(this).get(DeletedPasswordsViewModel.class);
+        initToolbar();
+        initRecycler();
+    }
+
+    private void initRecycler() {
         recyclerDeletedPasswords = findViewById(R.id.recyclerDeletedPasswords);
         recyclerDeletedPasswords.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerDeletedPasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapterPasswords = new AdapterDeletedPasswords(this, deletedHelper.getPasswordList());
-        recyclerDeletedPasswords.setAdapter(adapterPasswords);
+        adapter = new AdapterDeletedPasswords(this);
+        model.getPasswordList().observe(this, list -> {
+            adapter.updateList(list);
+        });
+        recyclerDeletedPasswords.setAdapter(adapter);
         new ItemTouchHelper(getItemHelperCallback()).attachToRecyclerView(recyclerDeletedPasswords);
+    }
 
+    private void initToolbar() {
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     protected void onStop() {
-        deletedHelper.removeListener();
+        model.detachListeners();
         super.onStop();
     }
 
     @Override
     public void onBackPressed() {
-        if (adapterPasswords.isShowMenu()) {
-            adapterPasswords.closeMenu();
-        } else {
-            super.onBackPressed();
-        }
-
+        if (adapter.isShowMenu()) adapter.closeMenu();
+        else super.onBackPressed();
     }
 
     @Override
@@ -110,17 +112,10 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg.equals(DeletedPasswordsViewModel.ARG_LIST_UPDATE)) {
-            adapterPasswords.notifyDataSetChanged();
-        }
-    }
-
     public void lockPasswords() {
         AdapterPasswords.setUnlocked(false);
         menuLockUnlock.setIcon(R.drawable.ic_padlock);
-        adapterPasswords.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -140,7 +135,7 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
                 super.onAuthenticationSucceeded(result);
                 AdapterPasswords.setUnlocked(true);
                 menuLockUnlock.setIcon(R.drawable.ic_open_padlock);
-                adapterPasswords.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -168,9 +163,9 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (AdapterPasswords.isUnlocked()) {
-                    deletedPassword = adapterPasswords.getPasswordAt(viewHolder.getAdapterPosition());
+                    deletedPassword = adapter.getPasswordAt(viewHolder.getAdapterPosition());
                     deletedPasswordPosition = viewHolder.getAdapterPosition();
-                    adapterPasswords.removeItemAt(viewHolder.getAdapterPosition());
+                    adapter.removeItemAt(viewHolder.getAdapterPosition());
 
                     if (direction == ItemTouchHelper.START) {
                         Log.i("AdapterDeleted", "SwipedStart");
@@ -184,7 +179,7 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
                     toast.cancel();
                     toast = Toast.makeText(DeletedPasswords.this, "Unlock the App first", Toast.LENGTH_SHORT);
                     toast.show();
-                    adapterPasswords.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
                 }
 
             }
@@ -206,7 +201,7 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
 
     private void showSnackDelete() {
         View.OnClickListener clickListener = v -> {
-            adapterPasswords.addItemAt(deletedPasswordPosition, deletedPassword);
+            adapter.addItemAt(deletedPasswordPosition, deletedPassword);
             deleteConfirmation = false;
         };
         Snackbar.Callback callback = new Snackbar.Callback() {
@@ -214,9 +209,7 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if (deleteConfirmation) {
-                    FirebaseHelper.getUserDatabaseReference()
-                            .child("deletedPasswords")
-                            .child(deletedPassword.getSite()).removeValue();
+                    new PasswordsDB().deletePermanently(deletedPassword);
                 }
                 deleteConfirmation = true;
             }
@@ -232,7 +225,7 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
 
     private void showSnackRestore() {
         View.OnClickListener clickListener = v -> {
-            adapterPasswords.addItemAt(deletedPasswordPosition, deletedPassword);
+            adapter.addItemAt(deletedPasswordPosition, deletedPassword);
             deleteConfirmation = false;
         };
         Snackbar.Callback callback = new Snackbar.Callback() {
@@ -240,19 +233,7 @@ public class DeletedPasswords extends AppCompatActivity implements Observer {
             public void onDismissed(Snackbar transientBottomBar, int event) {
                 super.onDismissed(transientBottomBar, event);
                 if (deleteConfirmation) {
-                    //Deleting the password from the deleted
-                    FirebaseHelper.getUserDatabaseReference()
-                            .child("deletedPasswords")
-                            .child(deletedPassword.getSite()).removeValue();
-                    //Putting the password on the main
-                    FirebaseHelper.getUserPasswordsReference()
-                            .child(deletedPassword.getSite())
-                            .setValue(deletedPassword);
-                    //Removing the deletedTime
-                    FirebaseHelper.getUserPasswordsReference()
-                            .child(deletedPassword.getSite())
-                            .child("deletedTime")
-                            .removeValue();
+                    new PasswordsDB().restorePassword(deletedPassword);
                 }
                 deleteConfirmation = true;
             }

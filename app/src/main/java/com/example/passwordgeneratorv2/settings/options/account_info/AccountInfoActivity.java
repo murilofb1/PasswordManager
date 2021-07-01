@@ -1,10 +1,9 @@
-package com.example.passwordgeneratorv2.settings.options;
+package com.example.passwordgeneratorv2.settings.options.account_info;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -15,9 +14,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
+import com.example.passwordgeneratorv2.databinding.ActivityAccountInfoBinding;
 import com.example.passwordgeneratorv2.helpers.Base64H;
 import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
 import com.example.passwordgeneratorv2.models.UserModel;
@@ -25,30 +26,36 @@ import com.example.passwordgeneratorv2.models.UserModel;
 import java.util.concurrent.Executor;
 
 
-public class AccountInfo extends AppCompatActivity {
+public class AccountInfoActivity extends AppCompatActivity {
 
-    private Button btnSettingsUserName;
-    private Button btnSettingsUserEmail;
-    private Button btnSettingsUserPassword;
-    private Button btnDeleteAccount;
 
     private final static int DIALOG_EDIT_NAME = 0;
     private final static int DIALOG_EDIT_EMAIL = 1;
     private final static int DIALOG_EDIT_PASSWORD = 2;
     private final static int DIALOG_DELETE_ACCOUNT = 3;
 
+    private ActivityAccountInfoBinding binding;
+    private AccountInfoViewModel model;
 
-    private static final UserModel userModel = UserModel.getCurrentUser();
-
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account_info);
+        binding = ActivityAccountInfoBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        model = new ViewModelProvider(this).get(AccountInfoViewModel.class);
+        addObservers();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        initComponents();
-        setDefaultValues();
-        setClickListener();
+
+      //  setDefaultValues();
+//        setClickListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        model.detachListeners();
+        super.onDestroy();
     }
 
     @Override
@@ -59,29 +66,20 @@ public class AccountInfo extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initComponents() {
-        btnSettingsUserName = findViewById(R.id.btnSettingsUserName);
-        btnSettingsUserEmail = findViewById(R.id.btnSettingsUserEmail);
-        btnSettingsUserPassword = findViewById(R.id.btnSettingsUserPassword);
-        btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
+    private void addObservers() {
+        model.getUserData().observe(this, model -> {
+            binding.edtAccountInfoName.setText(model.getName());
+            binding.edtAccountInfoEmail.setText(model.getEmail());
+        });
     }
 
-    private void setDefaultValues() {
 
-        if (userModel == null) {
-            setContentView(R.layout.user_data_error);
-        } else {
-            btnSettingsUserName.setText(userModel.getName());
-            btnSettingsUserEmail.setText(userModel.getEmail());
-        }
-
-    }
-
+    /*
     private void openDialog(int editField) {
         String title = "";
         String message = "";
 
-        EditText editText = new EditText(AccountInfo.this);
+        EditText editText = new EditText(AccountInfoActivity.this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -103,7 +101,7 @@ public class AccountInfo extends AppCompatActivity {
             message = "All of your data gonna be erased, are you sure?";
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(AccountInfo.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccountInfoActivity.this);
         builder.setTitle(title);
         if (!message.isEmpty()) {
             builder.setMessage(message);
@@ -137,7 +135,7 @@ public class AccountInfo extends AppCompatActivity {
                     UserModel.updateUserEmail(editText.getText().toString());
                 }
             } else if (editField == DIALOG_DELETE_ACCOUNT) {
-                FirebaseHelper.deleteUser(AccountInfo.this);
+                FirebaseHelper.deleteUser(AccountInfoActivity.this);
             }
 
         });
@@ -145,6 +143,8 @@ public class AccountInfo extends AppCompatActivity {
         builder.show();
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void setClickListener() {
         View.OnClickListener clickListener = v -> {
             if (AdapterPasswords.isUnlocked()) {
@@ -166,6 +166,8 @@ public class AccountInfo extends AppCompatActivity {
         btnSettingsUserPassword.setOnClickListener(clickListener);
         btnDeleteAccount.setOnClickListener(clickListener);
     }
+
+ */
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void openBiometric() {

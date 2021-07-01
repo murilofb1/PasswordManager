@@ -29,7 +29,7 @@
             android:name=".editPassword.EditPasswordView"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".newPassword.ActivityNewPassword"
+            android:name=".newPassword.NewPasswordActivity"
             android:label="@string/title_activity_cadastrar_senha"
             android:screenOrientation="portrait" />
         <activity
@@ -37,7 +37,7 @@
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".settings.options.AccountInfo"
+            android:name=".settings.options.account_info.AccountInfoActivity"
             android:label="@string/title_activity_account_info"
             android:screenOrientation="portrait" />
         <activity

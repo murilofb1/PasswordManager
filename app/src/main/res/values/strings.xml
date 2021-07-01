@@ -4,7 +4,10 @@
     <string name="fill_your_password_confirmation_first">The password confirmation can\'t be empty</string>
     <string name="fill_your_email_first">Fill your e-mail first</string>
     <string name="login_error_generic">Error on logging in</string>
-
+    <string name="password_registration_success">Password registered</string>
+    <string name="password_registration_failed">Something went wrong</string>
+    <string name="negative_button">No</string>
+    <string name="positive_button">Yes</string>
 
     <string name="app_name">Password Generator</string>
     <string name="txt_titulo_main">Main Passwords:</string>
@@ -27,12 +30,12 @@
 
     <!-- RegisterPassword -->
     <string name="title_activity_register_password">Register a new password</string>
-    <string name="txt_password_size">Password Size</string>
-    <string name="txt_upper_case_size">Number of uppercase letters</string>
-    <string name="txt_low_case_size">Number of lowercase letters</string>
-    <string name="txt_special_char_size">Number of special characters</string>
+    <string name="txtPasswordSize">Password Size:</string>
+    <string name="txtUpperCases">Number of uppercase letters:</string>
+    <string name="txtLowerCases">Number of lowercase letters:</string>
+    <string name="txtSpecialCharSize">Number of special characters:</string>
     <string name="shuffle_password">Shuffle Password</string>
-    <string name="btn_cadastrar_senha">Register</string>
+    <string name="btnRegisterPassword">Register</string>
 
     <string name="txt_select_site">Site:</string>
     <string name="default_text">Default text</string>

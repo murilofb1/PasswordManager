@@ -32,6 +32,6 @@ public class WebsiteModel {
     }
 
     public void setBeingUsed(boolean beingUsed) {
-        beingUsed = beingUsed;
+        this.beingUsed = beingUsed;
     }
 }

@@ -26,10 +26,15 @@ public class AdapterSpinnerSites extends ArrayAdapter<WebsiteModel> {
         super(context, 0, sites);
     }
 
+    void updateList(ArrayList<WebsiteModel> sites) {
+        super.clear();
+        super.addAll(sites);
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
         return initView(position, convertView, parent);
     }
 

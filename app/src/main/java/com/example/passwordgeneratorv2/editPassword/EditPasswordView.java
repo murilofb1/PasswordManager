@@ -5,153 +5,139 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.passwordgeneratorv2.CustomDialogs;
 import com.example.passwordgeneratorv2.R;
+import com.example.passwordgeneratorv2.constants.IntentTags;
+import com.example.passwordgeneratorv2.databinding.ActivityEditPasswordBinding;
 import com.example.passwordgeneratorv2.helpers.Base64H;
 import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
+import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;
-import com.github.clans.fab.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 
 import java.io.IOException;
 
 public class EditPasswordView extends AppCompatActivity {
-    private ImageView imgSiteIcon;
-    private EditText edtSiteName;
-    private EditText edtPassword;
-    private EditText edtSiteLink;
-    private FloatingActionButton fabConfirm;
-    private Password originalPsswd;
-    Uri selecImageUri = null;
+
+    //private Password originalPsswd;
+    Uri selectedImageUri = null;
     private static final int REQUEST_OPEN_GALLERY = 1;
+    private Password currentPassword;
+    private ActivityEditPasswordBinding binding;
+    private ToastH toast;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_password);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        initComponents();
+        binding = ActivityEditPasswordBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        toast = new ToastH(this);
+        initToolbar();
         setDefaultValues();
         setClickListener();
     }
 
-    private void initComponents() {
-        //ImageView
-        imgSiteIcon = findViewById(R.id.psswdEditIcon);
-        //EditText
-        edtSiteName = findViewById(R.id.psswdEditName);
-        edtPassword = findViewById(R.id.psswdEditPassword);
-        edtSiteLink = findViewById(R.id.psswdEditSiteLink);
-        //FloatingActionButton
-        fabConfirm = findViewById(R.id.fabConfirmEdit);
+    private void initToolbar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void setDefaultValues() {
-        originalPsswd = (Password) getIntent().getSerializableExtra("extraPassword");
-        if (!originalPsswd.getIconLink().equals("")) {
-            Glide.with(this).load(originalPsswd.getIconLink()).into(imgSiteIcon);
+        currentPassword = (Password) getIntent().getSerializableExtra(IntentTags.EXTRA_PASSWORD);
+        if (!currentPassword.getIconLink().isEmpty()) {
+            Glide.with(this)
+                    .load(currentPassword.getIconLink())
+                    .into(binding.imgEditSiteIcon);
         }
-
-        edtSiteName.setText(originalPsswd.getSite());
-        edtPassword.setText(Base64H.decode(originalPsswd.getPassword()));
-        edtSiteLink.setText(originalPsswd.getSiteLink());
-    }
-
-    private boolean validatedEditText() {
-        String strSiteName = edtSiteName.getText().toString();
-        String strPassword = edtPassword.getText().toString();
-
-
-        if (strPassword.equals("") || strSiteName.equals("")) {
-            return false;
-        } else {
-            return true;
-        }
+        binding.edtPasswordName.setText(currentPassword.getSite());
+        binding.edtPasswordPsswd.setText(Base64H.decode(currentPassword.getPassword()));
+        binding.edtPasswordLink.setText(currentPassword.getSiteLink());
     }
 
     private void setClickListener() {
-
-        fabConfirm.setOnClickListener(v -> {
-            if (validatedEditText()) {
-                changeConfirmation();
-            } else {
-                Toast.makeText(this, getString(R.string.toast_invalidated), Toast.LENGTH_SHORT).show();
-            }
+        binding.fabConfirmEdit.setOnClickListener(v -> {
+            if (validatedEditText()) changeConfirmation();
+            else toast.showToast(getString(R.string.toast_invalidated));
         });
-        imgSiteIcon.setOnClickListener(v -> {
+        binding.imgEditSiteIcon.setOnClickListener(v -> {
             Intent openGalery = new Intent(Intent.ACTION_GET_CONTENT);
             openGalery.setType("image/*");
             startActivityForResult(openGalery, REQUEST_OPEN_GALLERY);
+
+            //aquele bagui la que abre antes do onCreate
         });
     }
 
     private void changeConfirmation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.edt_password_dialog_title));
-        builder.setMessage(getString(R.string.edt_password_dialog_message));
+        CustomDialogs.ConfirmPasswordEditionDialog dialog = new CustomDialogs.ConfirmPasswordEditionDialog(this);
+        currentPassword = currentPassword.copyWith(
+                binding.edtPasswordName.getText().toString(),
+                Base64H.encode(binding.edtPasswordPsswd.getText().toString()),
+                null,
+                binding.edtPasswordLink.getText().toString()
+        );
+        dialog.setPassword(currentPassword);
+        dialog.showDialog();
+        //NAO TA HABILITADO A FUNÇÃO DE MUDAR O ICONE
+        /*
         builder.setPositiveButton("Yes", (dialog, which) -> {
             DatabaseReference originalReference = FirebaseHelper.getUserPasswordsReference().child(originalPsswd.getSite());
             if (!originalPsswd.getSite().equals(edtSiteName.getText().toString())) {
                 originalReference.removeValue();
-                if (!originalPsswd.getSite().equals("New item")){
+                if (!originalPsswd.getSite().equals("New item")) {
                     FirebaseHelper.getUserIconsReference().child(originalPsswd.getSite()).child("beingUsed").setValue(false);
                 }
                 originalReference = FirebaseHelper.getUserPasswordsReference().child(edtSiteName.getText().toString());
-                if (selecImageUri == null) {
+                if (selectedImageUri == null) {
                     originalReference.child("iconLink").setValue(originalPsswd.getIconLink());
                 }
             }
             originalReference.child("password").setValue(Base64H.encode(edtPassword.getText().toString()));
             originalReference.child("site").setValue(edtSiteName.getText().toString());
             originalReference.child("siteLink").setValue(edtSiteLink.getText().toString());
-            if (selecImageUri != null) {
-                FirebaseHelper.uploadEditImage(edtSiteName.getText().toString(), selecImageUri);
+            if (selectedImageUri != null) {
+                FirebaseHelper.uploadEditImage(edtSiteName.getText().toString(), selectedImageUri);
             }
             finish();
         });
-        builder.setNegativeButton("No", null);
-        builder.show();
+
+         */
+
     }
+
+    private boolean validatedEditText() {
+        String siteName = binding.edtPasswordName.getText().toString();
+        String sitePassword = binding.edtPasswordPsswd.getText().toString();
+        return !siteName.isEmpty() || !sitePassword.isEmpty();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_OPEN_GALLERY && resultCode == RESULT_OK) {
-            selecImageUri = data.getData();
+            selectedImageUri = data.getData();
             Bitmap selecImageBitmap = null;
             try {
-                selecImageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selecImageUri);
+                selecImageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             if (selecImageBitmap != null) {
-                imgSiteIcon.setImageBitmap(selecImageBitmap);
+                binding.imgEditSiteIcon.setImageBitmap(selecImageBitmap);
             }
         }
     }
 
-
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onSupportNavigateUp() {
+        finish();
+        return false;
     }
 }

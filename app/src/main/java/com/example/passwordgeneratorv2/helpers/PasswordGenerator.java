@@ -11,31 +11,27 @@ public class PasswordGenerator {
     private String[] specialChar = {"#", "$", "!", "@", "%", "&", "*", "_", "-", "+", ",", ".", "<", ">", ":", "?"};
     private String[] excludeSpecial = {};
 
-
-    boolean verifyInstance = false;
-
     List<String> passwordItems = new ArrayList<>();
 
 
     public int passwordSize = 8;
-    public int lowerCaseSize = 1;
-    public int upperCaseSize = 1;
-    public int specialCharSize = 2;
-    public int numberSize = 4;
-
+    public int lowerCasesCount = 1;
+    public int upperCasesCount = 1;
+    public int specialCharCount = 2;
+    public int numberCount = 4;
+    public final int maxPasswordSize = 16;
+    public final int minPasswordSize = 4;
 
     public PasswordGenerator() {
-
     }
 
-    public PasswordGenerator(int passwordSize, int lowerCaseSize, int upperCaseSize, int specialCharSize) {
-        int sum = lowerCaseSize + upperCaseSize + specialCharSize;
+    public PasswordGenerator(int passwordSize, int lowerCasesCount, int upperCasesCount, int specialCharCount) {
+        int sum = lowerCasesCount + upperCasesCount + specialCharCount;
         this.passwordSize = passwordSize;
-        this.lowerCaseSize = lowerCaseSize;
-        this.upperCaseSize = upperCaseSize;
-        this.specialCharSize = specialCharSize;
-        this.numberSize = passwordSize - sum;
-        this.verifyInstance = true;
+        this.lowerCasesCount = lowerCasesCount;
+        this.upperCasesCount = upperCasesCount;
+        this.specialCharCount = specialCharCount;
+        this.numberCount = passwordSize - sum;
     }
 
     public String generatePassword() {
@@ -55,47 +51,36 @@ public class PasswordGenerator {
         for (String charItem : passwordItems) {
             finalPsswd += charItem;
         }
-
         return finalPsswd;
     }
 
     private void generateChars() {
         passwordItems.clear();
 
-        for (int i = 0; i < lowerCaseSize; i++) {
+        for (int i = 0; i < lowerCasesCount; i++) {
             int rng = new Random().nextInt(lowerCases.length);
             passwordItems.add(lowerCases[rng]);
         }
-        for (int i = 0; i < upperCaseSize; i++) {
+        for (int i = 0; i < upperCasesCount; i++) {
             int rng = new Random().nextInt(upperCases.length);
             passwordItems.add(upperCases[rng]);
         }
-        for (int i = 0; i < specialCharSize; i++) {
+        for (int i = 0; i < specialCharCount; i++) {
             int rng = new Random().nextInt(specialChar.length);
             passwordItems.add(specialChar[rng]);
         }
-        for (int i = 0; i < numberSize; i++) {
+        for (int i = 0; i < numberCount; i++) {
             int rng = new Random().nextInt(10);
             passwordItems.add(String.valueOf(rng));
         }
-
     }
 
 
     private int getBiggerChar() {
-        int i = lowerCaseSize;
-
-        if (lowerCaseSize <= upperCaseSize) {
-            i = upperCaseSize;
-        }
-        if (upperCaseSize <= specialCharSize) {
-            i = specialCharSize;
-        }
-        if (specialCharSize <= numberSize) {
-            i = numberSize;
-        }
-
-
+        int i = lowerCasesCount;
+        if (lowerCasesCount <= upperCasesCount) i = upperCasesCount;
+        if (upperCasesCount <= specialCharCount) i = specialCharCount;
+        if (specialCharCount <= numberCount) i = numberCount;
         return i;
     }
 }

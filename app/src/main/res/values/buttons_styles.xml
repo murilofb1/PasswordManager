@@ -22,7 +22,7 @@
         <item name="backgroundTint">@color/primary</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:tint">@color/white</item>
-        <item name="android:background">@drawable/round_button</item>
+        <item name="android:background">@drawable/button_circle</item>
     </style>
 
 </resources>
