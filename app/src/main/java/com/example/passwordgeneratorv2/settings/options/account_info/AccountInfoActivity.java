@@ -3,15 +3,10 @@ package com.example.passwordgeneratorv2.settings.options.account_info;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,9 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityAccountInfoBinding;
-import com.example.passwordgeneratorv2.helpers.Base64H;
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
-import com.example.passwordgeneratorv2.models.UserModel;
 
 import java.util.concurrent.Executor;
 
@@ -176,8 +168,8 @@ public class AccountInfoActivity extends AppCompatActivity {
         BiometricPrompt.PromptInfo promptInfo;
 
         promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle(getString(R.string.biometric_title_home))
-                .setDescription(getString(R.string.biometric_description_account_info))
+                .setTitle(getString(R.string.biometric_unlock_title))
+                .setDescription(getString(R.string.biometric_unlock_info))
                 .setDeviceCredentialAllowed(true)
                 .build();
 

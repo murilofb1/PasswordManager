@@ -93,9 +93,9 @@
     <string name="developer_info">About the developer</string>
 
     <!-- BiometricPrompt -->
-    <string name="biometric_title_home">Unlock the App</string>
-    <string name="biometric_description_home">Your passwords are proctected from unauthorized people</string>
-    <string name="biometric_description_account_info">Unlock the app to edit your personal info</string>
+    <string name="biometric_unlock_title">Unlock the App</string>
+    <string name="biometric_unlock_description">Your passwords are protected from unauthorized people</string>
+    <string name="biometric_unlock_info">Unlock the app to edit your personal info</string>
 
     <!-- Snackbar -->
     <string name="snackbar_text">Deleting your password</string>
@@ -114,6 +114,9 @@
     <string name="Login">Login</string>
     <string name="passwords_dont_match">The passwords don\'t match</string>
     <string name="your_password">Your password</string>
-
-
+    <string name="toast_copy_password">%1$s\'s password copied to clipboard</string>
+    <string name="hint_new_item_name">Custom site name</string>
+    <string name="custom_item">Custom item</string>
+    <string name="unlock_first">Unlock the app first</string>
+    <string name="new_password">New Password</string>
 </resources>

@@ -26,7 +26,7 @@
             android:name=".home.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".editPassword.EditPasswordView"
+            android:name=".editPassword.EditPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".newPassword.NewPasswordActivity"

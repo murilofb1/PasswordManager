@@ -4,6 +4,7 @@ object FirebaseKeys {
     //UserDB
     const val USERS_KEY = "users"
     const val USER_DATA_KEY = "userData"
+    const val PASSWORD_SITE_NAME_KEY = "siteName"
 
     //PasswordsDB
     const val PASSWORDS_KEY = "passwords"
@@ -13,4 +14,6 @@ object FirebaseKeys {
     //Icons
     const val CUSTOM_ICONS_KEY = "customIconsPath"
     const val DEFAULT_ICONS_KEY = "default_icons"
+
+
 }

@@ -40,6 +40,7 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
 
 
     private List<Password> passwordList = new ArrayList();
+
     public void updateList(List<Password> list) {
         this.passwordList = list;
         notifyDataSetChanged();
@@ -48,6 +49,7 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
 
     private VibratorH vibrator;
     private boolean vibrationEnabled = false;
+
     void addVibrationEffect(Context context) {
         vibrator = new VibratorH(context);
     }
@@ -61,11 +63,13 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
  */
 
     private OnRecyclerItemClick recyclerItemClickListener;
-    public void setOnRecyclerCLickListener(OnRecyclerItemClick listener){
+
+    public void setOnRecyclerCLickListener(OnRecyclerItemClick listener) {
         this.recyclerItemClickListener = listener;
     }
 
-    public AdapterPasswords() { }
+    public AdapterPasswords() {
+    }
 
 
     @NonNull
@@ -79,45 +83,40 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-       if (!passwordList.isEmpty()){
-           if (!unlocked) {
-               changeAllVisibility(false);
-           }
+        if (!passwordList.isEmpty()) {
+            if (!unlocked) {
+                changeAllVisibility(false);
+            }
 
-           Password siteAtual = passwordList.get(position);
-           Context viewContext = holder.itemView.getContext();
-
-
-           boolean visible = visiblePassword[position];
-
-           if (visible) {
-               holder.txtPassword.setText(Base64H.decode(siteAtual.getPassword()));
-               holder.imgBtnShowHidePassword.setImageResource(drawable.ic_password_invisible);
-           } else {
-               holder.txtPassword.setText(maskedPassword(Base64H.decode(siteAtual.getPassword())));
-               holder.imgBtnShowHidePassword.setImageResource(drawable.ic_password_visibility);
-
-           }
-
-           if (siteAtual.isFavorite()) {
-               holder.checkfav.setImageResource(drawable.ic_favorite);
-           } else {
-               holder.checkfav.setImageResource(drawable.ic_not_favorite);
-           }
+            Password currentItem = passwordList.get(position);
+            Context viewContext = holder.itemView.getContext();
 
 
-           holder.txtSiteName.setText(siteAtual.getSite());
+            boolean visible = visiblePassword[position];
 
-           if (siteAtual.getIconLink().equals("")) {
-               Glide.with(holder.itemView).load(drawable.default_image).into(holder.imgSiteIcon);
-           } else {
-               Glide.with(holder.itemView).load(siteAtual.getIconLink()).into(holder.imgSiteIcon);
-           }
+            if (visible) {
+                holder.txtPassword.setText(Base64H.decode(currentItem.getPassword()));
+                holder.imgBtnShowHidePassword.setImageResource(drawable.ic_password_invisible);
+            } else {
+                holder.txtPassword.setText(maskedPassword(Base64H.decode(currentItem.getPassword())));
+                holder.imgBtnShowHidePassword.setImageResource(drawable.ic_password_visibility);
 
-           holder.imgBtnShowHidePassword.setOnClickListener(clickListenerHandler(viewContext, null, position));
-           holder.imgBtnCopyPassword.setOnClickListener(clickListenerHandler(viewContext, siteAtual.getPassword(), position));
-           holder.checkfav.setOnClickListener(clickListenerHandler(viewContext, null, position));
-       }
+            }
+
+
+            Log.i("AdapterPasswords", currentItem.getSiteName());
+            holder.txtSiteName.setText(currentItem.getSiteName());
+
+            if (currentItem.getIconLink().equals("")) {
+                Glide.with(holder.itemView).load(drawable.default_image).into(holder.imgSiteIcon);
+            } else {
+                Glide.with(holder.itemView).load(currentItem.getIconLink()).into(holder.imgSiteIcon);
+            }
+
+            holder.imgBtnShowHidePassword.setOnClickListener(clickListenerHandler(viewContext, null, position));
+            holder.imgBtnCopyPassword.setOnClickListener(clickListenerHandler(viewContext, currentItem.getPassword(), position));
+            holder.checkfav.setOnClickListener(clickListenerHandler(viewContext, null, position));
+        }
     }
 
     public static boolean isUnlocked() {
@@ -156,7 +155,7 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
                     if (toast != null) {
                         toast.cancel();
                     }
-                    toast = Toast.makeText(context, "Your " + actualPassword.getSite() + " password was copied to clipboard", Toast.LENGTH_SHORT);
+                    toast = Toast.makeText(context, "Your " + actualPassword.getSiteName() + " password was copied to clipboard", Toast.LENGTH_SHORT);
                     toast.show();
 
                 }
@@ -176,7 +175,7 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
 
 
             } else {
-                HomeActivity.openBiometricAuth();
+                //HomeActivity.openBiometricAuth();
 
             }
 

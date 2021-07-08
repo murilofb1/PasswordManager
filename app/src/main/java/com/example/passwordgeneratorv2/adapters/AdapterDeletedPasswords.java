@@ -63,7 +63,7 @@ public class AdapterDeletedPasswords extends RecyclerView.Adapter<RecyclerView.V
         Password password = passwordList.get(position);
         if (holder instanceof DeletedViewHolder) {
             DeletedViewHolder newHolder = (DeletedViewHolder) holder;
-            newHolder.textSitename.setText(password.getSite());
+            newHolder.textSitename.setText(password.getSiteName());
             if (AdapterPasswords.isUnlocked()) {
                 newHolder.textPassword.setText(Base64H.decode(password.getPassword()));
             } else {

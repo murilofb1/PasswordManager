@@ -5,4 +5,11 @@
         <item name="cornerSize">10%</item>
     </style>
 
+    <style name="DialogImageButton">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+
+    </style>
 </resources>

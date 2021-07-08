@@ -1,5 +1,6 @@
 package com.example.passwordgeneratorv2.helpers
 
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -11,5 +12,10 @@ class Security {
         fun turnLock(bool: Boolean) {
             appUnlocked.value = bool
         }
+
+        fun unlockApp(activity: FragmentActivity){
+            BiometricH.showUnlockBiometric(activity)
+        }
+
     }
 }

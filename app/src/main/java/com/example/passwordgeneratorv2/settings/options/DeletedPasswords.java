@@ -215,7 +215,7 @@ public class DeletedPasswords extends AppCompatActivity {
             }
         };
         View snackView = findViewById(android.R.id.content);
-        Snackbar.make(snackView, deletedPassword.getSite() + "'s password deleted ", Snackbar.LENGTH_SHORT)
+        Snackbar.make(snackView, deletedPassword.getSiteName() + "'s password deleted ", Snackbar.LENGTH_SHORT)
                 .addCallback(callback)
                 .setActionTextColor(ContextCompat.getColor(DeletedPasswords.this, R.color.teal_200))
                 .setAction("Undo", clickListener)
@@ -239,7 +239,7 @@ public class DeletedPasswords extends AppCompatActivity {
             }
         };
         View snackView = findViewById(android.R.id.content);
-        Snackbar.make(snackView, deletedPassword.getSite() + " moved to your main passwords ", Snackbar.LENGTH_SHORT)
+        Snackbar.make(snackView, deletedPassword.getSiteName() + " moved to your main passwords ", Snackbar.LENGTH_SHORT)
                 .addCallback(callback)
                 .setActionTextColor(ContextCompat.getColor(DeletedPasswords.this, R.color.teal_200))
                 .setAction("Undo", clickListener)

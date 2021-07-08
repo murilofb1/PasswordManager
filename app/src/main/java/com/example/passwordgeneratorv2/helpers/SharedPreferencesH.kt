@@ -2,8 +2,7 @@ package com.example.passwordgeneratorv2.helpers
 
 import android.content.Context
 
-class SharedPreferencesUtil(context: Context, name: String, mode: Int) {
-
+class SharedPreferencesH(context: Context, name: String, mode: Int) {
     private val sharedPreference = context.getSharedPreferences(name, mode)
     private val editor = sharedPreference.edit()
 

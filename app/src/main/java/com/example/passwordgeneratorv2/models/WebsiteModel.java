@@ -1,22 +1,25 @@
 package com.example.passwordgeneratorv2.models;
 
+import android.net.Uri;
+
+import com.google.firebase.database.Exclude;
+
 public class WebsiteModel {
-    private String name;
-    private String iconLink;
-    private String siteLink;
-    private boolean beingUsed = false;
+    protected String siteName;
+    protected String iconLink;
+    protected String siteLink;
 
     public WebsiteModel() {
     }
 
-    public WebsiteModel(String name, String iconLink, String siteLink) {
-        this.name = name;
+    public WebsiteModel(String siteName, String iconLink, String siteLink) {
+        this.siteName = siteName;
         this.iconLink = iconLink;
         this.siteLink = siteLink;
     }
 
-    public String getName() {
-        return name;
+    public String getSiteName() {
+        return siteName;
     }
 
     public String getIconLink() {
@@ -27,11 +30,8 @@ public class WebsiteModel {
         return siteLink;
     }
 
-    public boolean isBeingUsed() {
-        return beingUsed;
-    }
-
-    public void setBeingUsed(boolean beingUsed) {
-        this.beingUsed = beingUsed;
+    @Exclude
+    public Uri iconLinkToUri() {
+        return Uri.parse(iconLink);
     }
 }

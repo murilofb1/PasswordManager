@@ -7,11 +7,14 @@ import com.google.firebase.database.ValueEventListener
 
 open class FirebaseDB {
 
-    private val referencesList: MutableList<Query> = ArrayList()
-    private val listenersList: MutableList<ValueEventListener> = ArrayList()
+    private var referencesList: MutableList<Query>? = null
+    private var listenersList: MutableList<ValueEventListener>? = null
     protected val rootReference: DatabaseReference = FirebaseDatabase.getInstance().reference
 
-    fun generatePushKey(): String = rootReference.key!!
+    companion object {
+        private val staticRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
+        fun generatePushKey(): String = staticRoot.push().key!!
+    }
 
     fun getCurrentUserReference(): DatabaseReference {
         val userId = FirebaseAuthentication().getCurrentUserUid()
@@ -19,15 +22,21 @@ open class FirebaseDB {
     }
 
     protected fun addConsult(reference: Query, eventListener: ValueEventListener) {
-        referencesList.add(reference)
-        listenersList.add(eventListener)
+        if (referencesList == null && listenersList == null) {
+            referencesList = ArrayList()
+            listenersList = ArrayList()
+        }
+        referencesList?.add(reference)
+        listenersList?.add(eventListener)
     }
 
     fun removeAllListeners() {
-        var i = 0
-        while (i < referencesList.size) {
-            referencesList[i].removeEventListener(listenersList[i])
-            i++
+        if (referencesList != null && listenersList != null) {
+            var i = 0
+            while (i < referencesList!!.size) {
+                referencesList!![i].removeEventListener(listenersList!![i])
+                i++
+            }
         }
     }
 }

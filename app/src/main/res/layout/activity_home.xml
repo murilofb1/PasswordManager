@@ -51,12 +51,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHomePasswords"
         android:layout_width="0dp"
-
         android:layout_height="0dp"
         android:overScrollMode="never"
         android:paddingStart="15dp"
         android:paddingTop="5dp"
         android:paddingEnd="15dp"
+        android:paddingBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

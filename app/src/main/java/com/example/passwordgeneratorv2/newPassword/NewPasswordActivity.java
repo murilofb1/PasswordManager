@@ -1,21 +1,12 @@
 package com.example.passwordgeneratorv2.newPassword;
 
-import android.content.Intent;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,33 +14,18 @@ import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.AdapterSpinnerSites;
 import com.example.passwordgeneratorv2.databinding.ActivityNewPasswordBinding;
 import com.example.passwordgeneratorv2.helpers.Base64H;
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
 import com.example.passwordgeneratorv2.helpers.PasswordGenerator;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.models.WebsiteModel;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
-
-public class NewPasswordActivity extends AppCompatActivity implements Observer {
-    //CONSTANTS
-    private final static int REQUEST_OPEN_GALLERY = 1;
-
-    //AlertDialog
-    private ImageView dialogCustomImage;
-    private Uri customImageUri;
-    //Adapter
-    private ArrayList<WebsiteModel> sitesList;
-
+public class NewPasswordActivity extends AppCompatActivity {
     private NewPasswordViewModel model;
-
     public static AdapterSpinnerSites sitesAdapter;
 
     private boolean maxSeekBarValue;
+    private boolean customItemSelected = false;
 
     private ActivityNewPasswordBinding binding;
     private ToastH toastH;
@@ -58,26 +34,25 @@ public class NewPasswordActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityNewPasswordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         toastH = new ToastH(this);
         model = new ViewModelProvider(this).get(NewPasswordViewModel.class);
         addObservers();
-
         initSliders();
         initLayoutData();
         setChangeListeners();
         setClickListener();
-        //initSpinner();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initSpinner();
+        initToolbar();
     }
 
     private void addObservers() {
+        model.loadSpinnerList();
         model.isRegistrationCompleted().observe(this, value -> {
             if (value) finish();
         });
+        model.getSpinnerList().observe(this, list -> sitesAdapter.updateList(list));
     }
 
     @Override
@@ -96,9 +71,13 @@ public class NewPasswordActivity extends AppCompatActivity implements Observer {
     private void initLayoutData() {
         binding.edtGeneratedPassword.setText(model.currentPassword.generatePassword());
         updateValues();
-        //sitesList = model.getSpinnerPasswordList();
-        //AdapterSpinnerSites
-        sitesAdapter = new AdapterSpinnerSites(NewPasswordActivity.this, sitesList);
+    }
+
+    private void initToolbar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.new_password);
+        }
     }
 
     void initSliders() {
@@ -119,12 +98,25 @@ public class NewPasswordActivity extends AppCompatActivity implements Observer {
 
 
     private void initSpinner() {
+        sitesAdapter = new AdapterSpinnerSites(getBaseContext());
         binding.spinnerSites.setAdapter(sitesAdapter);
         binding.spinnerSites.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //if (position == sitesList.size() - 1) showDialog();
-                binding.edtGeneratedPassword.setText(sitesList.get(position).getSiteLink());
+                String itemLink = model.getSpinnerList()
+                        .getValue()
+                        .get(position)
+                        .getSiteLink();
+
+                if (position == sitesAdapter.getCount() - 1) {
+                    binding.tilNewSiteName.setVisibility(View.VISIBLE);
+                    customItemSelected = true;
+                } else {
+                    binding.tilNewSiteName.setVisibility(View.GONE);
+                    customItemSelected = false;
+                }
+
+                binding.edtNewSiteLink.setText(itemLink);
             }
 
             @Override
@@ -178,10 +170,19 @@ public class NewPasswordActivity extends AppCompatActivity implements Observer {
     private void setClickListener() {
         binding.btnRegisterPassword.setOnClickListener(view -> {
             WebsiteModel spinnerItem = (WebsiteModel) binding.spinnerSites.getSelectedItem();
+
+            String newSiteName;
+            String newSiteLink;
+            if (customItemSelected) {
+                newSiteName = binding.edtNewSiteName.getText().toString();
+                newSiteLink = binding.edtNewSiteLink.getText().toString();
+            } else {
+                newSiteName = spinnerItem.getSiteName();
+                newSiteLink = spinnerItem.getSiteLink();
+            }
             String newPsswd = Base64H.encode(binding.edtGeneratedPassword.getText().toString());
             String newIconLink = spinnerItem.getIconLink();
-            String newSiteName = spinnerItem.getName();
-            String newSiteLink = binding.edtGeneratedPassword.getText().toString();
+
             Password newPassword = new Password(newSiteName, newPsswd, newIconLink, newSiteLink);
             model.registerPassword(newPassword);
         });
@@ -195,34 +196,6 @@ public class NewPasswordActivity extends AppCompatActivity implements Observer {
             binding.edtGeneratedPassword.setText(model.currentPassword.shufflePassword());
         });
     }
-/*
-    private void showDialog() {
-        LayoutInflater inflater = getLayoutInflater();
-        // A gente infla a view do layout personalizado para o dialog
-        View dialogLayout = inflater.inflate(R.layout.alert_dialogue_new_password, null);
-        dialogCustomImage = dialogLayout.findViewById(R.id.img_custom_image);
-        EditText edtCustomSite = dialogLayout.findViewById(R.id.edt_custom_site);
-        dialogCustomImage.setOnClickListener(v -> {
-            Intent intentGetImage = new Intent(Intent.ACTION_GET_CONTENT);
-            intentGetImage.setType("image/*");
-            startActivityForResult(intentGetImage, REQUEST_OPEN_GALLERY);
-        });
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(NewPasswordActivity.this);
-        builder.setTitle("New item");
-        builder.setView(dialogLayout);
-        builder.setPositiveButton("Confirm", (dialog, which) -> {
-            if (customImageUri != null) FirebaseHelper.uploadSpinnerImage(edtCustomSite.getText().toString(), customImageUri, this);
-
-        }
-        );
-
-        builder.setNegativeButton("Cancel", null);
-        builder.create();
-        builder.show();
-    }
-
- */
 
     //Opções Menu Toolbar
     @Override
@@ -232,28 +205,4 @@ public class NewPasswordActivity extends AppCompatActivity implements Observer {
     }
 
 
-    //Result Intent
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_OPEN_GALLERY && resultCode == RESULT_OK) {
-            customImageUri = data.getData();
-            Bitmap imageBitmap = null;
-            try {
-                imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), customImageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (imageBitmap != null) dialogCustomImage.setImageBitmap(imageBitmap);
-
-        }
-    }
-
-
-    @Override
-    public void update(Observable o, Object arg) {
-        if (arg.equals(NewPasswordViewModel.SPINNER_LIST_ARG)) {
-            sitesAdapter.notifyDataSetChanged();
-        }
-    }
 }

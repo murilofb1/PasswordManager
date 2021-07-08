@@ -19,7 +19,6 @@ class SlidersController(
         val charSum = uppercaseSlider.value.toInt() +
                 lowercaseSlider.value.toInt() +
                 specialCharSlider.value.toInt()
-        Log.i("NewPasswordActivity", "PasswordSize = $passwordSize\n charSUm = $charSum")
         return charSum <= passwordSize
     }
 

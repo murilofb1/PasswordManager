@@ -1,20 +1,19 @@
 package com.example.passwordgeneratorv2.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.example.passwordgeneratorv2.R;
-import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.models.WebsiteModel;
 
 import java.util.ArrayList;
@@ -22,11 +21,11 @@ import java.util.List;
 
 public class AdapterSpinnerSites extends ArrayAdapter<WebsiteModel> {
 
-    public AdapterSpinnerSites(@NonNull Context context, ArrayList<WebsiteModel> sites) {
-        super(context, 0, sites);
+    public AdapterSpinnerSites(@NonNull Context context) {
+        super(context, 0, new ArrayList<>());
     }
 
-    void updateList(ArrayList<WebsiteModel> sites) {
+    public void updateList(List<WebsiteModel> sites) {
         super.clear();
         super.addAll(sites);
         notifyDataSetChanged();
@@ -59,7 +58,7 @@ public class AdapterSpinnerSites extends ArrayAdapter<WebsiteModel> {
                     .load(currentPassword.getIconLink())
                     .placeholder(R.drawable.default_image)
                     .into(imgSiteIcon);
-            txtSiteName.setText(currentPassword.getName());
+            txtSiteName.setText(currentPassword.getSiteName());
         }
 
 

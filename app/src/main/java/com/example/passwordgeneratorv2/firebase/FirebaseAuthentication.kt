@@ -1,8 +1,8 @@
 package com.example.passwordgeneratorv2.firebase
 
 import android.content.Context
-import com.example.passwordgeneratorv2.constants.KEI
-import com.example.passwordgeneratorv2.helpers.SharedPreferencesUtil
+import com.example.passwordgeneratorv2.constants.SharedPreferencesTags
+import com.example.passwordgeneratorv2.helpers.SharedPreferencesH
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -36,8 +36,12 @@ class FirebaseAuthentication {
         context: Context
     ): Task<AuthResult> {
         return instance.signInWithEmailAndPassword(email, password).addOnSuccessListener {
-            val prefUtil = SharedPreferencesUtil(context, KEI.AUTH_PREFERENCE, Context.MODE_PRIVATE)
-            prefUtil.addBoolean(KEI.AUTH_STATUS_KEY, true)
+            val prefUtil = SharedPreferencesH(
+                context,
+                SharedPreferencesTags.AUTH_PREFERENCE,
+                Context.MODE_PRIVATE
+            )
+            prefUtil.addBoolean(SharedPreferencesTags.AUTH_STATUS_KEY, true)
         }
     }
 
@@ -47,7 +51,8 @@ class FirebaseAuthentication {
 
     fun signOutUser(context: Context) {
         instance.signOut()
-        val prefUtil = SharedPreferencesUtil(context, KEI.AUTH_PREFERENCE, Context.MODE_PRIVATE)
-        prefUtil.removeItem(KEI.AUTH_STATUS_KEY)
+        val prefUtil =
+            SharedPreferencesH(context, SharedPreferencesTags.AUTH_PREFERENCE, Context.MODE_PRIVATE)
+        prefUtil.removeItem(SharedPreferencesTags.AUTH_STATUS_KEY)
     }
 }

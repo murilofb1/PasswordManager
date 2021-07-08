@@ -2,21 +2,14 @@ package com.example.passwordgeneratorv2.home;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
@@ -24,25 +17,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
-import com.bumptech.glide.Glide;
+import com.example.passwordgeneratorv2.CustomDialogs;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.NewAdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityHomeBinding;
-import com.example.passwordgeneratorv2.editPassword.EditPasswordView;
-import com.example.passwordgeneratorv2.firebase.PasswordsDB;
-import com.example.passwordgeneratorv2.helpers.Base64H;
+import com.example.passwordgeneratorv2.helpers.BiometricH;
 import com.example.passwordgeneratorv2.helpers.Security;
-import com.example.passwordgeneratorv2.helpers.VibratorH;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.newPassword.NewPasswordActivity;
-import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
 import com.example.passwordgeneratorv2.settings.SettingsActivity;
-import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -51,16 +36,13 @@ public class HomeActivity extends AppCompatActivity {
     private static BiometricPrompt biometricPrompt;
     private static BiometricPrompt.PromptInfo promptInfo;
 
-    private MenuItem menuItemLockUnlock;
-    private int listSize = 0;
-    private boolean isLoaded = false;
-
-    private List<String> icons = new ArrayList<>();
-
     private HomeViewModel model;
-    private static NewAdapterPasswords adapterPasswords = new NewAdapterPasswords();
     private ActivityHomeBinding binding;
+
+    private MenuItem menuItemLockUnlock;
     private boolean isUnlocked = false;
+
+    private static NewAdapterPasswords adapterPasswords = new NewAdapterPasswords();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,94 +50,18 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setClickListeners();
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xff1cbbb4));
+
         getSupportActionBar().setTitle("Minhas Senhas");
 
-        initializeComponents();
         initRecycler();
-
         model = new ViewModelProvider(this).get(HomeViewModel.class);
         addObservers();
 
     }
 
-/*
-    private void loadUserIcons() {
-        FirebaseHelper.getUserIconsReference().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                icons.clear();
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    Log.i("FirebaseH", item.getKey() + " ADDED");
-                    icons.add(item.getKey());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
- */
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //loadUserIcons();
-        if (menuItemLockUnlock != null && AdapterPasswords.isUnlocked()) {
-            menuItemLockUnlock.setIcon(R.drawable.ic_open_padlock);
-        } else if (menuItemLockUnlock != null && !AdapterPasswords.isUnlocked()) {
-            menuItemLockUnlock.setIcon(R.drawable.ic_padlock);
-        }
-    }
-
-
-    private void initializeComponents() {
-        //Executor
-        executor = ContextCompat.getMainExecutor(this);
-        //BiometricPrompt
-        biometricPrompt = new BiometricPrompt(HomeActivity.this,
-                executor, new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                Security.Companion.turnLock(true);
-
-            }
-
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
-            }
-        });
-        //PromptInfo
-        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle(getString(R.string.biometric_title_home))
-                .setDescription(getString(R.string.biometric_description_home))
-                .setDeviceCredentialAllowed(true)
-                .build();
-    }
-
     private void addObservers() {
         model.getPasswordList().observe(this, passwords -> {
             adapterPasswords.updateList(passwords);
-            //UPDATE THE VISIBLE PASSWORDS ARRAY
-            /*
-            int newListSize = passwords.size();
-
-            if (listSize < newListSize || listSize > newListSize) {
-                adapterPasswords.updateVisibleArray(newListSize);
-                this.listSize = newListSize;
-            }
-
-             */
         });
         Security.Companion.getAppUnlockStatus().observe(this, bool -> {
             if (menuItemLockUnlock != null) {
@@ -169,34 +75,16 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void initRecycler() {
-        /*
-        adapterPasswords.setOnRecyclerCLickListener(new AdapterPasswords.OnRecyclerItemClick() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onItemClick(int position) {
-                if (isUnlocked) {
-                    Password password = model.getPasswordList().getValue().get(position);
-                    showPasswordInfo(password);
-                } else {
-                    openBiometricAuth();
-                }
-            }
-
-            @Override
-            public void onLongClick(int position) {
-            }
-        });
-         */
-        /*
+        adapterPasswords.addToastFeedBack(this);
         adapterPasswords.setOnRecyclerCLickListener(new NewAdapterPasswords.OnRecyclerItemClick() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onItemClick(int position) {
                 if (isUnlocked) {
                     Password password = model.getPasswordList().getValue().get(position);
-                    showPasswordInfo(password);
+                    showPasswordInfoDialog(password);
                 } else {
-                    openBiometricAuth();
+                    Security.Companion.unlockApp(HomeActivity.this);
                 }
             }
 
@@ -205,17 +93,9 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-         */
         binding.recyclerHomePasswords.setAdapter(adapterPasswords);
         binding.recyclerHomePasswords.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        //binding.recyclerHomePasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
-
-
-    public static void openBiometricAuth() {
-        biometricPrompt.authenticate(promptInfo);
-    }
-
 
     private void setClickListeners() {
         binding.fabAddPassword.setOnClickListener(view -> {
@@ -235,20 +115,22 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menuToggleLock) {
             if (isUnlocked) Security.Companion.turnLock(false);
-            else openBiometricAuth();
+            else Security.Companion.unlockApp(HomeActivity.this);
+            //else openBiometricAuth();
         } else if (item.getItemId() == R.id.menuSettings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
-
+/*
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showPasswordInfo(Password password) {
 
         View passwordInfoView = getLayoutInflater().inflate(R.layout.dialog_password_info, null, false);
 
-        AlertDialog builder = new AlertDialog.Builder(this).create();
+        AlertDialog builder = new MaterialAlertDialogBuilder(this, R.style.RoundedDialogStyle).create();
+
 
         ImageView psswdInfoIcon = passwordInfoView.findViewById(R.id.psswdInfoIcon);
         TextView psswdInfoSiteName = passwordInfoView.findViewById(R.id.psswdInfoSiteName);
@@ -262,12 +144,12 @@ public class HomeActivity extends AppCompatActivity {
         View.OnClickListener clickListener = v -> {
             if (v.getId() == R.id.psswdInfoCopy) {
                 AdapterPasswords.copyPassword(password.getPassword(), this);
-                Toast.makeText(this, "Your " + password.getSite() + " password was copied to clipboard", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Your " + password.getSiteName() + " password was copied to clipboard", Toast.LENGTH_SHORT).show();
             } else if (v.getId() == R.id.psswdInfoFav) {
                 VibratorH vibratorH = new VibratorH(this);
                 vibratorH.shortVibration();
             } else if (v.getId() == R.id.psswdInfoEdit) {
-                Intent i = new Intent(this, EditPasswordView.class);
+                Intent i = new Intent(this, EditPasswordActivity.class);
                 i.putExtra("extraPassword", password);
                 startActivity(i);
             } else if (v.getId() == R.id.psswdInfoSiteLink) {
@@ -284,7 +166,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
             } else if (v.getId() == R.id.psswdInfoDelete) {
-                builder.dismiss();
+
                 Snackbar snackConfirm = Snackbar.make(findViewById(R.id.layoutHome), getText(R.string.snackbar_text), Snackbar.LENGTH_SHORT);
                 AtomicBoolean delete = new AtomicBoolean(true);
                 snackConfirm.setAction("Cancel", v1 -> {
@@ -311,7 +193,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                             FirebaseHelper.getUserPasswordsReference().child(password.getSite()).removeValue();
 
-                             */
+
                         }
                     }
                 });
@@ -326,13 +208,7 @@ public class HomeActivity extends AppCompatActivity {
         psswdInfoSiteLink.setOnClickListener(clickListener);
         psswdInfoDelete.setOnClickListener(clickListener);
 
-        if (password.isFavorite()) {
-            psswdInfoFav.setImageResource(R.drawable.ic_favorite);
-        } else {
-            psswdInfoFav.setImageResource(R.drawable.ic_not_favorite);
-        }
-
-        psswdInfoSiteName.setText(password.getSite());
+        psswdInfoSiteName.setText(password.getSiteName());
         psswdInfoPassword.setText(Base64H.decode(password.getPassword()));
 
         if (password.getIconLink().equals("")) {
@@ -341,9 +217,20 @@ public class HomeActivity extends AppCompatActivity {
             Glide.with(passwordInfoView).load(password.getIconLink()).into(psswdInfoIcon);
         }
 
+
         builder.setView(passwordInfoView);
+        builder.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         builder.show();
 
+    }
+    */
+
+    void showPasswordInfoDialog(Password password) {
+        new CustomDialogs(this)
+                .setPassword(password)
+                .setDialogType(CustomDialogs.SHOW_INFO)
+                .activateToastMessages(true)
+                .showDialog();
     }
 
 

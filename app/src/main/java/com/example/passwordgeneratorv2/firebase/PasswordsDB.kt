@@ -9,32 +9,10 @@ import java.sql.Timestamp
 
 class PasswordsDB : FirebaseDB() {
     fun registerPassword(password: Password): Task<Void> {
-
         return getCurrentUserReference()
             .child(FirebaseKeys.PASSWORDS_KEY)
             .child(password.id)
             .setValue(password)
-
-        /*
-
-        //NAO SEI MAIS O QUE ESSA MERDA FAZ
-
-    .addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            getUserIconsReference().child(password.site).child("beingUsed")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.value != null) {
-                            getUserIconsReference().child(password.site).child("beingUsed")
-                                .setValue(true)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                })
-        }
-
-         */
     }
 
     fun updatePassword(password: Password) {
@@ -43,7 +21,10 @@ class PasswordsDB : FirebaseDB() {
     }
 
     fun loadCurrentUserPasswords(eventListener: ValueEventListener) {
-        val reference = getCurrentUserReference().child(FirebaseKeys.PASSWORDS_KEY)
+        val reference = getCurrentUserReference()
+            .child(FirebaseKeys.PASSWORDS_KEY)
+            .orderByChild(FirebaseKeys.PASSWORD_SITE_NAME_KEY)
+
         reference.addValueEventListener(eventListener)
         addConsult(reference, eventListener)
     }
@@ -93,8 +74,9 @@ class PasswordsDB : FirebaseDB() {
                 for (item in snapshot.children) {
                     val password = item.getValue(Password::class.java)
                     val timeNow = Timestamp(System.currentTimeMillis())
-                    if (timeNow.time >= password!!.deletedTime) passwordsReference.child(password.site)
-                        .removeValue()
+                    if (timeNow.time >= password!!.deletedTime) {
+                        passwordsReference.child(item.key!!).removeValue()
+                    }
                 }
             }
 
