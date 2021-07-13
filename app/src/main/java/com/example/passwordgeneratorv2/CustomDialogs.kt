@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.example.passwordgeneratorv2.constants.IntentTags
 import com.example.passwordgeneratorv2.databinding.DialogPasswordInfoNewBinding
@@ -15,7 +16,9 @@ import com.example.passwordgeneratorv2.helpers.Base64H
 import com.example.passwordgeneratorv2.helpers.ClipboardH
 import com.example.passwordgeneratorv2.helpers.ToastH
 import com.example.passwordgeneratorv2.models.Password
+import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 class CustomDialogs(val context: Context) {
@@ -75,7 +78,7 @@ class CustomDialogs(val context: Context) {
         dialogConfigured = true
     }
 
-
+    val passwordRemoved = MutableLiveData<Password>()
     private fun configurePasswordInfoDialog() {
         val decodedPassword = Base64H.decode(password?.password)
         val infoDialogBinding = DialogPasswordInfoNewBinding.inflate(
@@ -115,17 +118,19 @@ class CustomDialogs(val context: Context) {
             btnInfoDelete.setOnClickListener {
                 //PasswordsDB().movePasswordToDeleted(password!!)
                 removeSnackBar()
+                passwordRemoved.value = password
                 dialog.dismiss()
             }
             btnInfoDelete.setOnLongClickListener {
                 toastH?.showToast(context.getString(R.string.delete_password))
-                false
+                true
             }
         }
 
         dialogConfigured = true
     }
 
+    val undoStatus = MutableLiveData(false)
     private fun removeSnackBar() {
         val activity = context as Activity
         val snack = Snackbar.make(
@@ -133,10 +138,20 @@ class CustomDialogs(val context: Context) {
             "Password removed",
             Snackbar.LENGTH_SHORT
         )
+        snack.addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                if (undoStatus.value == false) {
+                    PasswordsDB().movePasswordToDeleted(password!!)
+                }
+                undoStatus.value == false
+                super.onDismissed(transientBottomBar, event)
+            }
+        })
         snack.setAction("Undo") {
-
+            undoStatus.value = true
         }
         snack.show()
     }
+
 
 }

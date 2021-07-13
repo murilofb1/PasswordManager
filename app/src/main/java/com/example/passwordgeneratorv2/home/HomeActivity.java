@@ -1,19 +1,16 @@
 package com.example.passwordgeneratorv2.home;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -22,14 +19,11 @@ import com.example.passwordgeneratorv2.CustomDialogs;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.NewAdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityHomeBinding;
-import com.example.passwordgeneratorv2.helpers.BiometricH;
 import com.example.passwordgeneratorv2.helpers.Security;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.newPassword.NewPasswordActivity;
 import com.example.passwordgeneratorv2.settings.SettingsActivity;
-
-import java.util.concurrent.Executor;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -58,6 +52,12 @@ public class HomeActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(HomeViewModel.class);
         addObservers();
+    }
+
+    @Override
+    protected void onDestroy() {
+        model.detachListeners();
+        super.onDestroy();
     }
 
     private void addObservers() {
@@ -246,11 +246,27 @@ public class HomeActivity extends AppCompatActivity {
     */
 
     void showPasswordInfoDialog(Password password) {
-        new CustomDialogs(this)
+        CustomDialogs dialog = new CustomDialogs(this)
                 .setPassword(password)
                 .setDialogType(CustomDialogs.SHOW_INFO)
-                .activateToastMessages()
-                .showDialog();
+                .activateToastMessages();
+
+        if (!dialog.getUndoStatus().hasObservers()) {
+            dialog.getUndoStatus().observe(this, bool -> {
+                if (bool) {
+                    Log.i("HomeActivityLog", "Undo = true");
+                    adapterPasswords.restoreLastItem();
+                }
+            });
+        }
+        if (!dialog.getPasswordRemoved().hasObservers()) {
+            dialog.getPasswordRemoved().observe(this, psswd -> {
+                if (psswd != null) {
+                    adapterPasswords.removeItem(psswd);
+                }
+            });
+        }
+        dialog.showDialog();
     }
 
 

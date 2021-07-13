@@ -49,7 +49,9 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    void detachListener() {
+
+
+    void detachListeners() {
         passwordsDB.removeAllListeners();
     }
 

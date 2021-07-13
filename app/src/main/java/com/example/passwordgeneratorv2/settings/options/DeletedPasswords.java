@@ -27,6 +27,8 @@ import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.AdapterDeletedPasswords;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
 import com.example.passwordgeneratorv2.firebase.PasswordsDB;
+import com.example.passwordgeneratorv2.helpers.ToastH;
+import com.example.passwordgeneratorv2.home.HomeViewModel;
 import com.example.passwordgeneratorv2.models.Password;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,14 +45,14 @@ public class DeletedPasswords extends AppCompatActivity {
     private Password deletedPassword = null;
     private int deletedPasswordPosition;
     private boolean deleteConfirmation = true;
-    private Toast toast;
+    private ToastH toastH;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deleted_passwords);
 
-        toast = new Toast(this);
+        toastH = new ToastH(this);
         model = new ViewModelProvider(this).get(DeletedPasswordsViewModel.class);
         initToolbar();
         initRecycler();
@@ -176,9 +178,7 @@ public class DeletedPasswords extends AppCompatActivity {
 
                     }
                 } else {
-                    toast.cancel();
-                    toast = Toast.makeText(DeletedPasswords.this, "Unlock the App first", Toast.LENGTH_SHORT);
-                    toast.show();
+                    toastH.showToast(getString(R.string.unlock_first));
                     adapter.notifyDataSetChanged();
                 }
 

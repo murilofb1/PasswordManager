@@ -19,10 +19,6 @@ import java.util.Observable;
 
 class DeletedPasswordsViewModel extends ViewModel {
 
-    DeletedPasswordsViewModel() {
-        loadList();
-    }
-
     private MutableLiveData<List<Password>> passwordList = new MutableLiveData<>();
     public LiveData<List<Password>> getPasswordList() { return passwordList; }
 

@@ -1,6 +1,7 @@
 package com.example.passwordgeneratorv2.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -13,19 +14,41 @@ import com.example.passwordgeneratorv2.R
 import com.example.passwordgeneratorv2.databinding.RecyclerPasswordsBinding
 import com.example.passwordgeneratorv2.helpers.*
 import com.example.passwordgeneratorv2.models.Password
+import java.lang.IllegalArgumentException
+import java.lang.IndexOutOfBoundsException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHolder>() {
 
     private var isUnlocked = false
     private val passwordVisibility = MutableLiveData(false)
-    fun isPasswordsVisible():LiveData<Boolean> = passwordVisibility
+    fun isPasswordsVisible(): LiveData<Boolean> = passwordVisibility
 
 
-    private var passwordList: List<Password> = ArrayList()
-    fun updateList(list: List<Password>) {
+    private var passwordList: MutableList<Password> = ArrayList()
+
+    fun updateList(list: MutableList<Password>) {
         this.passwordList = list
         notifyDataSetChanged()
+    }
+
+    private var removedPosition = 0
+    var removedPassword: Password? = null
+
+    fun removeItem(password: Password) {
+        removedPosition = getItemPosition(password)
+        Log.i("HomeActivityLog", "RemovedItemId = $removedPosition")
+        removedPassword = password
+        Log.i("HomeActivityLog", "RemovedPasswordName = ${removedPassword!!.siteName}")
+
+        passwordList.removeAt(removedPosition)
+        notifyDataSetChanged()
+    }
+
+    fun restoreLastItem() {
+        passwordList.add(removedPosition, removedPassword!!)
+        notifyItemInserted(removedPosition)
     }
 
     private var vibrator: VibratorH? = null
@@ -77,11 +100,8 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
             holder.setIsRecyclable(false)
             val currentSite = passwordList[position]
             val decodedPassword = Base64H.decode(currentSite.password)
-            if (passwordVisibility.value!!) {
-                binding.txtPasswordRecycler.text = decodedPassword
-            } else {
-                binding.txtPasswordRecycler.text = StringUtil.applyPasswordMask(decodedPassword)
-            }
+            if (passwordVisibility.value!!) binding.txtPasswordRecycler.text = decodedPassword
+            else binding.txtPasswordRecycler.text = StringUtil.applyPasswordMask(decodedPassword)
 
 
             binding.txtNameRecycler.text = currentSite.siteName
@@ -111,10 +131,24 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
         }
     }
 
+    private fun getItemPosition(password: Password): Int {
+        var i = 0
+        while (i < passwordList.size) {
+            val listItem = passwordList[i]
+            if (listItem == password) return i
+
+            i++
+        }
+
+        throw IllegalArgumentException("The item doesn't exists in the list")
+    }
 
     override fun getItemCount(): Int = passwordList.size
 
-    inner class NewViewHolder(itemView: View, private val recyclerItemClick: OnRecyclerItemClick?) :
+    inner class NewViewHolder(
+        itemView: View,
+        private val recyclerItemClick: OnRecyclerItemClick?
+    ) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
 
         override fun onClick(v: View) {
