@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 
 class Security {
     companion object {
-        private val appUnlocked = MutableLiveData(false)
+        private val appUnlocked = MutableLiveData(true)
         fun getAppUnlockStatus(): LiveData<Boolean> = appUnlocked
 
         fun turnLock(bool: Boolean) {

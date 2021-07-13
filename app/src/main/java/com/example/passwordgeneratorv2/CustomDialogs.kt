@@ -1,7 +1,9 @@
 package com.example.passwordgeneratorv2
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
@@ -14,13 +16,13 @@ import com.example.passwordgeneratorv2.helpers.ClipboardH
 import com.example.passwordgeneratorv2.helpers.ToastH
 import com.example.passwordgeneratorv2.models.Password
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 class CustomDialogs(val context: Context) {
     private val dialog = MaterialAlertDialogBuilder(context, R.style.RoundedDialogStyle).create()
     private var password: Password? = null
     private var dialogConfigured = false
-    private var toastEnabled = false
-    private val toastH = ToastH(context)
+    private var toastH: ToastH? = null
 
     companion object {
         const val EDIT_PASSWORD = "edit_psswd"
@@ -32,11 +34,10 @@ class CustomDialogs(val context: Context) {
         return this;
     }
 
-    fun activateToastMessages(value: Boolean): CustomDialogs {
-        this.toastEnabled = value
+    fun activateToastMessages(): CustomDialogs {
+        toastH = ToastH(context)
         return this;
     }
-
 
     fun setDialogType(dialogType: String): CustomDialogs {
         when (dialogType) {
@@ -58,7 +59,14 @@ class CustomDialogs(val context: Context) {
             AlertDialog.BUTTON_POSITIVE,
             context.getString(R.string.positive_button)
         ) { _, _ ->
-            if (password != null) PasswordsDB().updatePassword(password!!)
+            if (password != null) {
+                PasswordsDB().updatePassword(password!!).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val activity = context as Activity
+                        activity.finish()
+                    }
+                }
+            }
         }
         dialog.setButton(
             AlertDialog.BUTTON_NEGATIVE,
@@ -85,11 +93,13 @@ class CustomDialogs(val context: Context) {
 
             btnInfoCopy.setOnClickListener {
                 ClipboardH.copyString(decodedPassword, context)
-                if (toastEnabled) {
-                    toastH.showToast(
-                        context.getString(R.string.toast_copy_password, password?.siteName)
-                    )
-                }
+                toastH?.showToast(
+                    context.getString(R.string.toast_copy_password, password?.siteName)
+                )
+            }
+            btnInfoCopy.setOnLongClickListener {
+                toastH?.showToast(context.getString(R.string.copy_password))
+                true
             }
 
             btnInfoEdit.setOnClickListener {
@@ -97,8 +107,36 @@ class CustomDialogs(val context: Context) {
                 i.putExtra(IntentTags.EXTRA_PASSWORD, password!!)
                 context.startActivity(i)
             }
+            btnInfoEdit.setOnLongClickListener {
+                toastH?.showToast(context.getString(R.string.edit_password))
+                true
+            }
+
+            btnInfoDelete.setOnClickListener {
+                //PasswordsDB().movePasswordToDeleted(password!!)
+                removeSnackBar()
+                dialog.dismiss()
+            }
+            btnInfoDelete.setOnLongClickListener {
+                toastH?.showToast(context.getString(R.string.delete_password))
+                false
+            }
         }
+
         dialogConfigured = true
+    }
+
+    private fun removeSnackBar() {
+        val activity = context as Activity
+        val snack = Snackbar.make(
+            activity.findViewById(android.R.id.content),
+            "Password removed",
+            Snackbar.LENGTH_SHORT
+        )
+        snack.setAction("Undo") {
+
+        }
+        snack.show()
     }
 
 }

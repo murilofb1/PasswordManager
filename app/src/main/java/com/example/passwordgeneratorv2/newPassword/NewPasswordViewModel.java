@@ -6,11 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.firebase.PasswordsDB;
-import com.example.passwordgeneratorv2.firebase.WebsitesDB;
+import com.example.passwordgeneratorv2.firebase.IconsDB;
 import com.example.passwordgeneratorv2.helpers.PasswordGenerator;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.models.WebsiteModel;
@@ -40,10 +39,10 @@ public class NewPasswordViewModel extends AndroidViewModel {
 
     public PasswordGenerator currentPassword = new PasswordGenerator();
     PasswordsDB passwordsDB = new PasswordsDB();
-    WebsitesDB websitesDB = new WebsitesDB();
+    IconsDB iconsDB = new IconsDB();
 
     public void loadSpinnerList() {
-        websitesDB.loadWebsites(new ValueEventListener() {
+        iconsDB.loadWebsites(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 List<WebsiteModel> list = new ArrayList();
@@ -74,7 +73,7 @@ public class NewPasswordViewModel extends AndroidViewModel {
 
     public void detachListeners() {
         passwordsDB.removeAllListeners();
-        websitesDB.removeAllListeners();
+        iconsDB.removeAllListeners();
     }
 
 }

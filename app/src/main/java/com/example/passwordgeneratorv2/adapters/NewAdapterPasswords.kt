@@ -1,29 +1,26 @@
 package com.example.passwordgeneratorv2.adapters
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.passwordgeneratorv2.R
 import com.example.passwordgeneratorv2.databinding.RecyclerPasswordsBinding
-import com.example.passwordgeneratorv2.helpers.Base64H
-import com.example.passwordgeneratorv2.helpers.ClipboardH
-import com.example.passwordgeneratorv2.helpers.ToastH
-import com.example.passwordgeneratorv2.helpers.VibratorH
-import com.example.passwordgeneratorv2.home.HomeActivity
+import com.example.passwordgeneratorv2.helpers.*
 import com.example.passwordgeneratorv2.models.Password
 import java.util.*
 
 class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHolder>() {
 
     private var isUnlocked = false
-    private var passwordVisibility = false
+    private val passwordVisibility = MutableLiveData(false)
+    fun isPasswordsVisible():LiveData<Boolean> = passwordVisibility
+
 
     private var passwordList: List<Password> = ArrayList()
     fun updateList(list: List<Password>) {
@@ -50,13 +47,19 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
     fun updateUnlockStatus(status: Boolean) {
         this.isUnlocked = status
         if (!status) {
-            passwordVisibility = false
+            toggleVisibility(false)
         }
     }
 
-    fun toggleVisibility() {
-
+    fun toggleVisibility(value: Boolean?) {
+        if (value == null) {
+            if (isUnlocked) passwordVisibility.value = !passwordVisibility.value!!
+        } else {
+            passwordVisibility.value = value
+        }
+        notifyDataSetChanged()
     }
+
 
     private lateinit var binding: RecyclerPasswordsBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewViewHolder {
@@ -73,8 +76,15 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
         if (passwordList.isNotEmpty()) {
             holder.setIsRecyclable(false)
             val currentSite = passwordList[position]
-            binding.txtPasswordRecycler.text = Base64H.decode(currentSite!!.password)
-            binding.txtNameRecycler.text = currentSite!!.siteName
+            val decodedPassword = Base64H.decode(currentSite.password)
+            if (passwordVisibility.value!!) {
+                binding.txtPasswordRecycler.text = decodedPassword
+            } else {
+                binding.txtPasswordRecycler.text = StringUtil.applyPasswordMask(decodedPassword)
+            }
+
+
+            binding.txtNameRecycler.text = currentSite.siteName
 
             Glide.with(holder.itemView)
                 .load(currentSite.iconLinkToUri())
@@ -84,7 +94,7 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
                 val context = holder.itemView.context
                 if (isUnlocked) {
                     ClipboardH.copyString(
-                        Base64H.decode(currentSite!!.password), context
+                        decodedPassword, context
                     )
                     toast?.showToast(
                         context.getString(
@@ -125,17 +135,6 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
     interface OnRecyclerItemClick {
         fun onItemClick(position: Int)
         fun onLongClick(position: Int)
-    }
-
-    companion object {
-
-        fun maskedPassword(password: String): String {
-            var masked = ""
-            for (i in 0 until password.length) {
-                masked += "*"
-            }
-            return masked
-        }
     }
 
 

@@ -72,16 +72,6 @@
     <!-- AccountInfo -->
     <string name="title_activity_account_info">Account Info</string>
     <string name="btn_delete_account">Delete account</string>
-    <!-- DeveloperInfo -->
-    <string name="title_activity_developer_info">Developer Info</string>
-    <string name="element_whats_title">WhatsApp</string>
-    <string name="element_gmail_title">Gmail</string>
-    <string name="element_github_title">GitHub</string>
-    <string name="element_linkedin_title">Linkedin</string>
-    <string name="about_page_description">
-        Meu nome é Murilo Francisco Bento, atualmente tenho 21 anos e estou cursando Sistemas de Informação. Esse é meu primeiro app que fiz como projeto pessoal.
-        Caso queira me conhecer mais basta acessar uma de minhas redes sociais abaixo.
-    </string>
     <!-- DeletedPasswords -->
     <string name="activity_deleted_passwords_title">Deleted Passwords</string>
     <!-- SiteInfo Dialog -->
@@ -100,11 +90,15 @@
     <!-- Snackbar -->
     <string name="snackbar_text">Deleting your password</string>
 
-
-    <!-- EditPassword -->
     <!-- Toast -->
     <string name="toast_invalidated">Fill all the fields before</string>
+    <string name="toast_empty_name_and_password">The site name and password can\'t be empty</string>
     <string name="toast_load_new_icon">Wait until your new icon load</string>
+    <string name="copy_password">Copy password</string>
+    <string name="edit_password">Edit password</string>
+    <string name="delete_password">Delete password</string>
+    <string name="no_link_assigned">No link assigned</string>
+
     <!-- SiteInfo Dialog -->
     <string name="edt_password_dialog_title">Confirm alterations</string>
     <string name="edt_password_dialog_message">Are you sure that you want to edit this password</string>
@@ -119,4 +113,5 @@
     <string name="custom_item">Custom item</string>
     <string name="unlock_first">Unlock the app first</string>
     <string name="new_password">New Password</string>
+    <string name="confirm_changes">Confirm changes</string>
 </resources>

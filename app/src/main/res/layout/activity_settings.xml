@@ -1,75 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:divider="@color/logo_background_darker"
+    android:orientation="vertical"
+    android:showDividers="middle">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/logo_background_darker"
-        android:orientation="vertical"
-        android:showDividers="middle">
-
-        <Button
-            android:id="@+id/btnDataInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="20dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:gravity="start|center_vertical"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="@string/settings_data"
-            android:textAllCaps="false" />
-        <Button
-            android:id="@+id/btnDeletedPasswords"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_delete"
-            android:drawablePadding="20dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:elevation="0dp"
-            android:gravity="start|center_vertical"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="@string/activity_deleted_passwords_title"
-            android:textAllCaps="false" />
-
-        <Button
-            android:id="@+id/btnAboutPage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_mobile_development"
-            android:drawablePadding="20dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:elevation="0dp"
-            android:gravity="start|center_vertical"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="@string/developer_info"
-            android:textAllCaps="false" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDeletedPasswords"
+        style="@style/Button.Transparent"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="start|center_vertical"
+        android:text="@string/activity_deleted_passwords_title" />
 
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogOut"
+        style="@style/Button.Transparent"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="start|center_vertical"
+        android:text="@string/settings_logout" />
 
-        <Button
-            android:id="@+id/btnLogOut"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_exit"
-            android:drawablePadding="20dp"
-            android:drawableTint="?attr/colorControlNormal"
-            android:elevation="0dp"
-            android:gravity="start|center_vertical"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="@string/settings_logout"
-            android:textAllCaps="false" />
-
-    </LinearLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

@@ -21,9 +21,7 @@ import com.example.passwordgeneratorv2.settings.options.DeletedPasswords;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private Button btnDataInfo;
     private Button btnLogOut;
-    private Button btnAboutPage;
     private Button btnDeletedPasswords;
 
     @Override
@@ -46,18 +44,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initComponents() {
         //Button
-        btnDataInfo = findViewById(R.id.btnDataInfo);
+
         btnLogOut = findViewById(R.id.btnLogOut);
-        btnAboutPage = findViewById(R.id.btnAboutPage);
+
         btnDeletedPasswords = findViewById(R.id.btnDeletedPasswords);
     }
 
     private void setOnClick() {
         View.OnClickListener clickListener = v -> {
-            if (v.getId() == R.id.btnDataInfo) {
-                startActivity(new Intent(getApplicationContext(), AccountInfoActivity.class));
-            }
-            else if (v.getId() == R.id.btnLogOut) {
+             if (v.getId() == R.id.btnLogOut) {
                 new FirebaseAuthentication().signOutUser(this);
                 startActivity(new Intent(getApplicationContext(), AuthenticationActivity.class));
                 finishAffinity();
@@ -65,9 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), DeletedPasswords.class));
             }
         };
-        btnDataInfo.setOnClickListener(clickListener);
         btnLogOut.setOnClickListener(clickListener);
-        btnAboutPage.setOnClickListener(clickListener);
         btnDeletedPasswords.setOnClickListener(clickListener);
     }
 }

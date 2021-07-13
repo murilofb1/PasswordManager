@@ -15,8 +15,8 @@ class PasswordsDB : FirebaseDB() {
             .setValue(password)
     }
 
-    fun updatePassword(password: Password) {
-        getCurrentUserReference().child(FirebaseKeys.PASSWORDS_KEY).child(password.id)
+    fun updatePassword(password: Password): Task<Void> {
+        return getCurrentUserReference().child(FirebaseKeys.PASSWORDS_KEY).child(password.id)
             .setValue(password.toMap())
     }
 
@@ -29,13 +29,16 @@ class PasswordsDB : FirebaseDB() {
         addConsult(reference, eventListener)
     }
 
-    fun deletePassword(password: Password) {
+    fun movePasswordToDeleted(password: Password) {
         getCurrentUserReference().child(FirebaseKeys.DELETED_PASSWORDS_KEY).child(password.id)
             .setValue(password)
         val timestamp = Timestamp(System.currentTimeMillis())
         val deleteTime = timestamp.time + 2629800000L//UM MÊS EM LONG
+        //Adicionando o deletedTime a referencia da senha deletada
         getCurrentUserReference().child(FirebaseKeys.DELETED_PASSWORDS_KEY).child(password.id)
             .child(FirebaseKeys.DELETED_TIME_KEY).setValue(deleteTime)
+        //Removendo a senha das senhas principais
+        getCurrentUserReference().child(FirebaseKeys.PASSWORDS_KEY).child(password.id).removeValue()
     }
 
     fun deletePermanently(password: Password) {

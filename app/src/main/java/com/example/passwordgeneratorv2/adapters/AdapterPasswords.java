@@ -54,14 +54,6 @@ public class AdapterPasswords extends RecyclerView.Adapter<AdapterPasswords.MyVi
         vibrator = new VibratorH(context);
     }
 
-/*
-    public AdapterPasswords(List<Password> passwordList, OnRecyclerItemClick clickListener) {
-        this.passwordList = passwordList;
-        this.recyclerItemClickListener = clickListener;
-    }
-
- */
-
     private OnRecyclerItemClick recyclerItemClickListener;
 
     public void setOnRecyclerCLickListener(OnRecyclerItemClick listener) {

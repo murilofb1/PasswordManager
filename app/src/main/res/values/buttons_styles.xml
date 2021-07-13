@@ -18,7 +18,7 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="Button.Refresh">
+    <style name="Button.Circle">
         <item name="backgroundTint">@color/primary</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:tint">@color/white</item>

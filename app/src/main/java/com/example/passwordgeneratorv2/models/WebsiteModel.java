@@ -4,7 +4,9 @@ import android.net.Uri;
 
 import com.google.firebase.database.Exclude;
 
-public class WebsiteModel {
+import java.io.Serializable;
+
+public class WebsiteModel implements Serializable {
     protected String siteName;
     protected String iconLink;
     protected String siteLink;
@@ -15,6 +17,14 @@ public class WebsiteModel {
     public WebsiteModel(String siteName, String iconLink, String siteLink) {
         this.siteName = siteName;
         this.iconLink = iconLink;
+        this.siteLink = siteLink;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public void setSiteLink(String siteLink) {
         this.siteLink = siteLink;
     }
 

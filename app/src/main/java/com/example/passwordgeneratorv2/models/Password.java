@@ -1,7 +1,6 @@
 package com.example.passwordgeneratorv2.models;
 
-
-import android.net.Uri;
+import androidx.annotation.Nullable;
 
 import com.example.passwordgeneratorv2.firebase.FirebaseDB;
 import com.google.firebase.database.Exclude;
@@ -19,6 +18,16 @@ public class Password extends WebsiteModel implements Serializable {
     int showMenu = 0;
 
     public Password() {
+    }
+
+    @Override
+    public boolean equals(@Nullable @org.jetbrains.annotations.Nullable Object obj) {
+        if (obj instanceof Password) {
+            Password password = (Password) obj;
+            return password.getId() == this.getId();
+        } else {
+            return false;
+        }
     }
 
     public Map<String, Object> toMap() {
@@ -48,10 +57,12 @@ public class Password extends WebsiteModel implements Serializable {
     public String getPassword() {
         return password;
     }
+
     @Exclude
     public long getDeletedTime() {
         return deletedTime;
     }
+
     @Exclude
     public int getShowMenu() {
         return showMenu;
@@ -65,9 +76,7 @@ public class Password extends WebsiteModel implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
-
 }

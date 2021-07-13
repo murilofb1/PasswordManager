@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.example.passwordgeneratorv2.adapters.NewAdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityHomeBinding;
 import com.example.passwordgeneratorv2.helpers.BiometricH;
 import com.example.passwordgeneratorv2.helpers.Security;
+import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.newPassword.NewPasswordActivity;
 import com.example.passwordgeneratorv2.settings.SettingsActivity;
@@ -32,31 +34,30 @@ import java.util.concurrent.Executor;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private Executor executor;
-    private static BiometricPrompt biometricPrompt;
-    private static BiometricPrompt.PromptInfo promptInfo;
-
     private HomeViewModel model;
     private ActivityHomeBinding binding;
 
     private MenuItem menuItemLockUnlock;
+    private MenuItem menuToggleVisibility;
     private boolean isUnlocked = false;
 
-    private static NewAdapterPasswords adapterPasswords = new NewAdapterPasswords();
+    private final NewAdapterPasswords adapterPasswords = new NewAdapterPasswords();
+    private ToastH toast;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        setClickListeners();
 
-        getSupportActionBar().setTitle("Minhas Senhas");
+        toast = new ToastH(this);
 
         initRecycler();
+        setClickListeners();
+
         model = new ViewModelProvider(this).get(HomeViewModel.class);
         addObservers();
-
     }
 
     private void addObservers() {
@@ -70,6 +71,15 @@ public class HomeActivity extends AppCompatActivity {
             }
             adapterPasswords.updateUnlockStatus(bool);
             isUnlocked = bool;
+        });
+        adapterPasswords.isPasswordsVisible().observe(this, visible -> {
+            if (menuToggleVisibility != null) {
+                if (visible) {
+                    menuToggleVisibility.setIcon(R.drawable.ic_password_invisible);
+                } else {
+                    menuToggleVisibility.setIcon(R.drawable.ic_password_visibility);
+                }
+            }
         });
     }
 
@@ -108,18 +118,28 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_passwords_fragments, menu);
         menuItemLockUnlock = menu.findItem(R.id.menuToggleLock);
+        menuToggleVisibility = menu.findItem(R.id.menuToggleVisibility);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menuToggleLock) {
-            if (isUnlocked) Security.Companion.turnLock(false);
-            else Security.Companion.unlockApp(HomeActivity.this);
-            //else openBiometricAuth();
-        } else if (item.getItemId() == R.id.menuSettings) {
-            Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
+        switch (item.getItemId()) {
+            case R.id.menuToggleLock:
+                if (isUnlocked) Security.Companion.turnLock(false);
+                else Security.Companion.unlockApp(HomeActivity.this);
+                break;
+            case R.id.menuSettings:
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
+                break;
+            case R.id.menuToggleVisibility:
+                if (!isUnlocked) {
+                    toast.showToast(getString(R.string.unlock_first));
+                } else {
+                    adapterPasswords.toggleVisibility(null);
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -229,7 +249,7 @@ public class HomeActivity extends AppCompatActivity {
         new CustomDialogs(this)
                 .setPassword(password)
                 .setDialogType(CustomDialogs.SHOW_INFO)
-                .activateToastMessages(true)
+                .activateToastMessages()
                 .showDialog();
     }
 
