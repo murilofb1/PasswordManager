@@ -98,7 +98,7 @@
     <string name="edit_password">Edit password</string>
     <string name="delete_password">Delete password</string>
     <string name="no_link_assigned">No link assigned</string>
-
+    <string name="site_name_password">%1$s\'s password </string>
     <!-- SiteInfo Dialog -->
     <string name="edt_password_dialog_title">Confirm alterations</string>
     <string name="edt_password_dialog_message">Are you sure that you want to edit this password</string>

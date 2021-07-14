@@ -1,6 +1,5 @@
 package com.example.passwordgeneratorv2.firebase
 
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 

@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.authentication.AuthenticationActivity;
 import com.example.passwordgeneratorv2.firebase.FirebaseAuthentication;
-import com.example.passwordgeneratorv2.settings.deleted_passwords.DeletedPasswords;
 import com.example.passwordgeneratorv2.settings.deleted_passwords.DeletedPasswordsActivity;
 
 

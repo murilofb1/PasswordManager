@@ -90,7 +90,7 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
             parent,
             false
         )
-        return NewViewHolder(binding.root, recyclerItemClickListener)
+        return NewViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: NewAdapterPasswords.NewViewHolder, position: Int) {
@@ -146,16 +146,15 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
 
     inner class NewViewHolder(
         itemView: View,
-        private val recyclerItemClick: OnRecyclerItemClick?
     ) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
 
         override fun onClick(v: View) {
-            recyclerItemClick?.onItemClick(adapterPosition)
+            recyclerItemClickListener?.onItemClick(adapterPosition)
         }
 
         override fun onLongClick(v: View): Boolean {
-            recyclerItemClick?.onLongClick(adapterPosition)
+            recyclerItemClickListener?.onLongClick(adapterPosition)
             return true
         }
 

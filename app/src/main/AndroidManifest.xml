@@ -37,7 +37,7 @@
         <activity android:name=".settings.account_info.AccountInfoActivity" />
 
         <activity
-            android:name=".settings.deleted_passwords.DeletedPasswords"
+            android:name=".to_delete.DeletedPasswords"
             android:label="@string/activity_deleted_passwords_title" />
 
         <activity

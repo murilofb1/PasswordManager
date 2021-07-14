@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.helpers;
+package com.example.passwordgeneratorv2.to_delete;
 
 import android.app.Activity;
 import android.content.Intent;

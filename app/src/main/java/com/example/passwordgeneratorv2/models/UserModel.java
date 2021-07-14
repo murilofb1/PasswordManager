@@ -1,13 +1,5 @@
 package com.example.passwordgeneratorv2.models;
 
-import androidx.annotation.NonNull;
-
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Exclude;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 
 public class UserModel {

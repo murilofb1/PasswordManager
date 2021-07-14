@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.firebase
+package com.example.passwordgeneratorv2.constants
 
 object FirebaseKeys {
     //UserDB

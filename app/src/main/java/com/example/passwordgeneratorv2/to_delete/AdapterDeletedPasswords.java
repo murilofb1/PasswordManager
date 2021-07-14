@@ -1,6 +1,5 @@
-package com.example.passwordgeneratorv2.adapters;
+package com.example.passwordgeneratorv2.to_delete;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

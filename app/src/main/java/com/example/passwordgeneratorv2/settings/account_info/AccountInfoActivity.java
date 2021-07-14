@@ -12,7 +12,7 @@ import androidx.biometric.BiometricPrompt;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.passwordgeneratorv2.R;
-import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
+import com.example.passwordgeneratorv2.to_delete.AdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityAccountInfoBinding;
 
 import java.util.concurrent.Executor;

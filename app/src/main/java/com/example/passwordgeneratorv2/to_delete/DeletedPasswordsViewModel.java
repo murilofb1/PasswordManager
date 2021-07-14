@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.settings.deleted_passwords;
+package com.example.passwordgeneratorv2.to_delete;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;

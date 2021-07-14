@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.adapters;
+package com.example.passwordgeneratorv2.to_delete;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -21,7 +21,6 @@ import com.bumptech.glide.Glide;
 import com.example.passwordgeneratorv2.helpers.ArrayHelper;
 import com.example.passwordgeneratorv2.helpers.Base64H;
 import com.example.passwordgeneratorv2.helpers.VibratorH;
-import com.example.passwordgeneratorv2.home.HomeActivity;
 import com.example.passwordgeneratorv2.models.Password;
 
 import org.jetbrains.annotations.NotNull;
