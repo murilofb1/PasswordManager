@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.authentication;
+package com.example.passwordgeneratorv2.authentication.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.passwordgeneratorv2.R;
+import com.example.passwordgeneratorv2.authentication.registration.RegisterFragment;
 import com.example.passwordgeneratorv2.databinding.FragmentLoginBinding;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.home.HomeActivity;

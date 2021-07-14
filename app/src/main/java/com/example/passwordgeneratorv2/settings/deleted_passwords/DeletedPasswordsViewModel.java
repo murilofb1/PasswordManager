@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.settings.options;
+package com.example.passwordgeneratorv2.settings.deleted_passwords;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -6,16 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.passwordgeneratorv2.firebase.PasswordsDB;
-import com.example.passwordgeneratorv2.helpers.FirebaseHelper;
 import com.example.passwordgeneratorv2.models.Password;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 class DeletedPasswordsViewModel extends ViewModel {
 

@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.newPassword;
+package com.example.passwordgeneratorv2.new_password;
 
 
 import android.os.Bundle;

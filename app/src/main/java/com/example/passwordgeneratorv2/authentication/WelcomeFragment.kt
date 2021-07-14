@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.passwordgeneratorv2.authentication.login.LoginFragment
+import com.example.passwordgeneratorv2.authentication.registration.RegisterFragment
 import com.example.passwordgeneratorv2.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : Fragment() {

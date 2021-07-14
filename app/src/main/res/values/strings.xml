@@ -114,4 +114,6 @@
     <string name="unlock_first">Unlock the app first</string>
     <string name="new_password">New Password</string>
     <string name="confirm_changes">Confirm changes</string>
+    <string name="menu_restore_passwords">Restore Passwords</string>
+    <string name="delete_permanently">Delete passwords permanently</string>
 </resources>

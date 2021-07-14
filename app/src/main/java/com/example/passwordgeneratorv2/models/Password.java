@@ -12,8 +12,7 @@ import java.util.Map;
 public class Password extends WebsiteModel implements Serializable {
     private String id;
     private String password;
-    @Exclude
-    long deletedTime = 0;
+    long deletedTime;
     @Exclude
     int showMenu = 0;
 
@@ -58,7 +57,7 @@ public class Password extends WebsiteModel implements Serializable {
         return password;
     }
 
-    @Exclude
+
     public long getDeletedTime() {
         return deletedTime;
     }

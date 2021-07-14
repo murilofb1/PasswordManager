@@ -51,22 +51,23 @@ class PasswordsDB : FirebaseDB() {
         getCurrentUserReference()
             .child(FirebaseKeys.DELETED_PASSWORDS_KEY)
             .child(password.id)
-            .removeValue();
+            .removeValue()
         //Putting the password on the main
         getCurrentUserReference()
             .child(FirebaseKeys.PASSWORDS_KEY)
             .child(password.id)
-            .setValue(password);
+            .setValue(password)
         //Removing the deletedTime
         getCurrentUserReference()
             .child(FirebaseKeys.PASSWORDS_KEY)
             .child(password.id)
             .child(FirebaseKeys.DELETED_TIME_KEY)
-            .removeValue();
+            .removeValue()
     }
 
     fun loadDeletedPasswords(eventListener: ValueEventListener) {
         val reference = getCurrentUserReference().child(FirebaseKeys.DELETED_PASSWORDS_KEY)
+        reference.addValueEventListener(eventListener)
         addConsult(reference, eventListener)
     }
 

@@ -1,9 +1,8 @@
-package com.example.passwordgeneratorv2.settings.options.account_info
+package com.example.passwordgeneratorv2.settings.account_info
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.passwordgeneratorv2.firebase.FirebaseAuthentication
 import com.example.passwordgeneratorv2.firebase.UsersDB
 import com.example.passwordgeneratorv2.models.UserModel
 import com.google.firebase.database.DataSnapshot

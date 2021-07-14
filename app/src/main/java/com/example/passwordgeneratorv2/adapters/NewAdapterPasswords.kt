@@ -15,8 +15,7 @@ import com.example.passwordgeneratorv2.databinding.RecyclerPasswordsBinding
 import com.example.passwordgeneratorv2.helpers.*
 import com.example.passwordgeneratorv2.models.Password
 import java.lang.IllegalArgumentException
-import java.lang.IndexOutOfBoundsException
-import java.util.*
+
 import kotlin.collections.ArrayList
 
 class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHolder>() {
@@ -165,11 +164,5 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
             itemView.setOnLongClickListener(this)
         }
     }
-
-    interface OnRecyclerItemClick {
-        fun onItemClick(position: Int)
-        fun onLongClick(position: Int)
-    }
-
 
 }

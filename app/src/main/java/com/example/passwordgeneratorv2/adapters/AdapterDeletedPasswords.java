@@ -15,16 +15,18 @@ import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.helpers.Base64H;
 import com.example.passwordgeneratorv2.models.Password;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterDeletedPasswords extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Password> passwordList;
-    private Context context;
+    private List<Password> passwordList = new ArrayList<>();
+
     public static int HIDE_MENU = 0;
     public static int SHOW_DELETE_MENU = 1;
     public static int SHOW_RESTORE_MENU = 2;
 
-    public AdapterDeletedPasswords(Context context) { this.context = context; }
+    public AdapterDeletedPasswords() {
+    }
 
     public void updateList(List<Password> passwords) {
         this.passwordList = passwords;

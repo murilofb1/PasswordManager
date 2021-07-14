@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.editPassword
+package com.example.passwordgeneratorv2.edit_password
 
 import androidx.lifecycle.ViewModel
 

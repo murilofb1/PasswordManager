@@ -1,6 +1,5 @@
-package com.example.passwordgeneratorv2.newPassword
+package com.example.passwordgeneratorv2.new_password
 
-import android.util.Log
 import com.google.android.material.slider.Slider
 
 class SlidersController(

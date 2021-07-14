@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.authentication
+package com.example.passwordgeneratorv2.authentication.login
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

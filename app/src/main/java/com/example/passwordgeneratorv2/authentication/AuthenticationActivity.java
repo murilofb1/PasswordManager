@@ -25,7 +25,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         if (auth.isSomeoneLogged()) skipScreen();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
-
         moveToFragment(welcomeFragment);
     }
 
@@ -43,7 +42,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         currentFragment = fragment;
     }
 
-    protected void skipScreen() {
+    public void skipScreen() {
         startActivity(new Intent(this, HomeActivity.class));
         finish();
     }

@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.authentication;
+package com.example.passwordgeneratorv2.authentication.registration;
 
 import android.os.Bundle;
 
@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.passwordgeneratorv2.authentication.AuthenticationActivity;
 import com.example.passwordgeneratorv2.databinding.FragmentRegistrationBinding;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 

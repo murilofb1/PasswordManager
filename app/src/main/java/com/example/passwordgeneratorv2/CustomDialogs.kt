@@ -3,22 +3,19 @@ package com.example.passwordgeneratorv2
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.example.passwordgeneratorv2.constants.IntentTags
 import com.example.passwordgeneratorv2.databinding.DialogPasswordInfoNewBinding
-import com.example.passwordgeneratorv2.editPassword.EditPasswordActivity
+import com.example.passwordgeneratorv2.edit_password.EditPasswordActivity
 import com.example.passwordgeneratorv2.firebase.PasswordsDB
 import com.example.passwordgeneratorv2.helpers.Base64H
 import com.example.passwordgeneratorv2.helpers.ClipboardH
 import com.example.passwordgeneratorv2.helpers.ToastH
 import com.example.passwordgeneratorv2.models.Password
-import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 
 class CustomDialogs(val context: Context) {

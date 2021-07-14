@@ -15,34 +15,40 @@
         android:theme="@style/MainTheme">
         <activity
             android:name=".authentication.AuthenticationActivity"
-            android:theme="@style/MainTheme.NoActionBar"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:screenOrientation="portrait"
+            android:theme="@style/MainTheme.NoActionBar">
+
         </activity>
         <activity
             android:name=".home.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".editPassword.EditPasswordActivity"
+            android:name=".edit_password.EditPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".newPassword.NewPasswordActivity"
+            android:name=".new_password.NewPasswordActivity"
             android:label="@string/title_activity_cadastrar_senha"
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".settings.account_info.AccountInfoActivity" />
+
         <activity
-            android:name=".settings.options.account_info.AccountInfoActivity"
-            android:label="@string/title_activity_account_info"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".settings.options.DeletedPasswords"
+            android:name=".settings.deleted_passwords.DeletedPasswords"
             android:label="@string/activity_deleted_passwords_title" />
+
+        <activity
+            android:name=".settings.deleted_passwords.DeletedPasswordsActivity"
+            android:label="@string/activity_deleted_passwords_title">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
     </application>
 

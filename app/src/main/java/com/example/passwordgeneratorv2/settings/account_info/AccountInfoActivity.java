@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.settings.options.account_info;
+package com.example.passwordgeneratorv2.settings.account_info;
 
 import android.os.Build;
 import android.os.Bundle;

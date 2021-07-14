@@ -19,10 +19,11 @@ import com.example.passwordgeneratorv2.CustomDialogs;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.adapters.NewAdapterPasswords;
 import com.example.passwordgeneratorv2.databinding.ActivityHomeBinding;
+import com.example.passwordgeneratorv2.helpers.OnRecyclerItemClick;
 import com.example.passwordgeneratorv2.helpers.Security;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;
-import com.example.passwordgeneratorv2.newPassword.NewPasswordActivity;
+import com.example.passwordgeneratorv2.new_password.NewPasswordActivity;
 import com.example.passwordgeneratorv2.settings.SettingsActivity;
 
 
@@ -86,7 +87,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void initRecycler() {
         adapterPasswords.addToastFeedBack(this);
-        adapterPasswords.setOnRecyclerCLickListener(new NewAdapterPasswords.OnRecyclerItemClick() {
+        adapterPasswords.setOnRecyclerCLickListener(new OnRecyclerItemClick() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onItemClick(int position) {

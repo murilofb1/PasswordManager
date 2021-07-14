@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.settings.options;
+package com.example.passwordgeneratorv2.settings.deleted_passwords;
 
 
 import android.graphics.Canvas;
@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,6 @@ import com.example.passwordgeneratorv2.adapters.AdapterDeletedPasswords;
 import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
 import com.example.passwordgeneratorv2.firebase.PasswordsDB;
 import com.example.passwordgeneratorv2.helpers.ToastH;
-import com.example.passwordgeneratorv2.home.HomeViewModel;
 import com.example.passwordgeneratorv2.models.Password;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -62,7 +60,7 @@ public class DeletedPasswords extends AppCompatActivity {
         recyclerDeletedPasswords = findViewById(R.id.recyclerDeletedPasswords);
         recyclerDeletedPasswords.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         recyclerDeletedPasswords.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapter = new AdapterDeletedPasswords(this);
+        adapter = new AdapterDeletedPasswords();
         model.getPasswordList().observe(this, list -> {
             adapter.updateList(list);
         });
