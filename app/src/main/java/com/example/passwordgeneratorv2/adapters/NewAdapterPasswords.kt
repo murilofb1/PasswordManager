@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -14,9 +15,12 @@ import com.example.passwordgeneratorv2.R
 import com.example.passwordgeneratorv2.databinding.RecyclerPasswordsBinding
 import com.example.passwordgeneratorv2.helpers.*
 import com.example.passwordgeneratorv2.models.Password
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.textview.MaterialTextView
 import java.lang.IllegalArgumentException
 
 import kotlin.collections.ArrayList
+import kotlin.coroutines.coroutineContext
 
 class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHolder>() {
 
@@ -37,28 +41,25 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
 
     fun removeItem(password: Password) {
         removedPosition = getItemPosition(password)
-        Log.i("HomeActivityLog", "RemovedItemId = $removedPosition")
         removedPassword = password
-        Log.i("HomeActivityLog", "RemovedPasswordName = ${removedPassword!!.siteName}")
-
         passwordList.removeAt(removedPosition)
-        notifyDataSetChanged()
+        notifyItemRemoved(removedPosition)
+        notifyItemRangeChanged(removedPosition, passwordList.size)
     }
 
     fun restoreLastItem() {
-        passwordList.add(removedPosition, removedPassword!!)
-        notifyItemInserted(removedPosition)
+        if (removedPassword!= null){
+            passwordList.add(removedPosition, removedPassword!!)
+            notifyItemInserted(removedPosition)
+            notifyItemRangeChanged(removedPosition, passwordList.size)
+        }
     }
 
     private var vibrator: VibratorH? = null
-    fun addVibrationEffect(context: Context) {
-        vibrator = VibratorH(context)
-    }
+    fun addVibrationEffect(context: Context) { vibrator = VibratorH(context) }
 
     private var toast: ToastH? = null
-    fun addToastFeedBack(context: Context) {
-        toast = ToastH(context)
-    }
+    fun addToastFeedBack(context: Context) { toast = ToastH(context) }
 
 
     private var recyclerItemClickListener: OnRecyclerItemClick? = null
@@ -68,64 +69,53 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
 
     fun updateUnlockStatus(status: Boolean) {
         this.isUnlocked = status
-        if (!status) {
-            toggleVisibility(false)
-        }
+        if (!status) toggleVisibility(false)
     }
 
     fun toggleVisibility(value: Boolean?) {
-        if (value == null) {
-            if (isUnlocked) passwordVisibility.value = !passwordVisibility.value!!
-        } else {
-            passwordVisibility.value = value
+        when (value) {
+            null -> if (isUnlocked) passwordVisibility.value = !passwordVisibility.value!!
+            else -> passwordVisibility.value = value
         }
         notifyDataSetChanged()
     }
 
 
-    private lateinit var binding: RecyclerPasswordsBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewViewHolder {
-        binding = RecyclerPasswordsBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return NewViewHolder(binding.root)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.recycler_passwords, parent, false)
+
+        return NewViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: NewAdapterPasswords.NewViewHolder, position: Int) {
 
         if (passwordList.isNotEmpty()) {
-            holder.setIsRecyclable(false)
+
             val currentSite = passwordList[position]
             val decodedPassword = Base64H.decode(currentSite.password)
-            if (passwordVisibility.value!!) binding.txtPasswordRecycler.text = decodedPassword
-            else binding.txtPasswordRecycler.text = StringUtil.applyPasswordMask(decodedPassword)
+            if (passwordVisibility.value!!) holder.txtPassword.text = decodedPassword
+            else holder.txtPassword.text = StringUtil.applyPasswordMask(decodedPassword)
 
-
-            binding.txtNameRecycler.text = currentSite.siteName
+            holder.txtPasswordName.text = currentSite.siteName
 
             Glide.with(holder.itemView)
                 .load(currentSite.iconLinkToUri())
                 .placeholder(R.drawable.default_image)
-                .into(binding.imgIconRecycler)
-            binding.imgBtnCopyPassword.setOnClickListener {
+                .into(holder.imgPasswordIcon)
+
+            holder.btnCopyPassword.setOnClickListener {
                 val context = holder.itemView.context
                 if (isUnlocked) {
-                    ClipboardH.copyString(
-                        decodedPassword, context
-                    )
-                    toast?.showToast(
-                        context.getString(
+                    ClipboardH.copyString(decodedPassword, context)
+                    toast?.showToast(context.getString(
                             R.string.toast_copy_password,
                             currentSite.siteName
-                        )
-                    )
+                        ))
                     vibrator?.shortVibration()
                 } else {
                     toast?.showToast(holder.itemView.context.getString(R.string.unlock_first))
                 }
-
             }
         }
     }
@@ -135,10 +125,8 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
         while (i < passwordList.size) {
             val listItem = passwordList[i]
             if (listItem == password) return i
-
             i++
         }
-
         throw IllegalArgumentException("The item doesn't exists in the list")
     }
 
@@ -148,20 +136,24 @@ class NewAdapterPasswords : RecyclerView.Adapter<NewAdapterPasswords.NewViewHold
         itemView: View,
     ) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
+        val imgPasswordIcon: ShapeableImageView = itemView.findViewById(R.id.imgRecyclerHomeIcon)
+        val txtPasswordName: MaterialTextView = itemView.findViewById(R.id.txtRecyclerHomeName)
+        val txtPassword: MaterialTextView = itemView.findViewById(R.id.txtRecyclerHomePassword)
+        val btnCopyPassword: ImageButton = itemView.findViewById(R.id.imgBtnCopyPassword)
 
-        override fun onClick(v: View) {
-            recyclerItemClickListener?.onItemClick(adapterPosition)
+        init {
+            itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
+
+        override fun onClick(v: View) { recyclerItemClickListener?.onItemClick(adapterPosition) }
 
         override fun onLongClick(v: View): Boolean {
             recyclerItemClickListener?.onLongClick(adapterPosition)
             return true
         }
 
-        init {
-            itemView.setOnClickListener(this)
-            itemView.setOnLongClickListener(this)
-        }
+
     }
 
 }

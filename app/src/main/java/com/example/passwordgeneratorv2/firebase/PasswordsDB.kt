@@ -26,7 +26,7 @@ class PasswordsDB : FirebaseDB() {
             .child(FirebaseKeys.PASSWORDS_KEY)
             .orderByChild(FirebaseKeys.PASSWORD_SITE_NAME_KEY)
 
-        reference.addValueEventListener(eventListener)
+        reference.addListenerForSingleValueEvent(eventListener)
         addConsult(reference, eventListener)
     }
 

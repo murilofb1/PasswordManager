@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.to_delete;
+package com.example.passwordgeneratorv2.settings.deleted_passwords;
 
 
 import android.graphics.Canvas;
@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.passwordgeneratorv2.R;
+import com.example.passwordgeneratorv2.adapters.AdapterDeletedPasswords;
+import com.example.passwordgeneratorv2.adapters.AdapterPasswords;
 import com.example.passwordgeneratorv2.firebase.PasswordsDB;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;

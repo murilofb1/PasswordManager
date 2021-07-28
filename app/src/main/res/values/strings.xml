@@ -1,4 +1,6 @@
 <resources>
+    <string name="show_passwords">Show passwords</string>
+    <string name="hide_passwords">Hide passwords</string>
     <string name="fill_all_the_fields_first">Fill all the fields first</string>
     <string name="fill_your_password_first">"Fill your password first"</string>
     <string name="fill_your_password_confirmation_first">The password confirmation can\'t be empty</string>
@@ -47,7 +49,7 @@
     <string name="password_confirmation">Password confirmation</string>
 
     <!-- MenuItens -->
-    <string name="menu_lockunlock">LockUnlock</string>
+    <string name="menu_toggle_lock">Lock or unlock app</string>
 
     <!-- New Site Dialog -->
     <string name="dialog_new_site_name">New site name</string>
@@ -116,4 +118,12 @@
     <string name="confirm_changes">Confirm changes</string>
     <string name="menu_restore_passwords">Restore Passwords</string>
     <string name="delete_permanently">Delete passwords permanently</string>
+    <string name="unlock_app">UnlockApp</string>
+    <string name="lock_app">Lock app</string>
+    <string name="maximum_selection_exceeded">You can only select %1$d items at time</string>
+    <string name="passwords_delete_warning">The following password(s) will be deleted</string>
+    <string name="passwords_restore_warning">The following password(s) will be restored</string>
+    <string name="are_you_sure">Are you sure about that!</string>
+    <string name="password_removed">Password removed</string>
+    <string name="unable_to_open_site">Unable to open your site</string>
 </resources>

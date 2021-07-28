@@ -29,10 +29,9 @@ public class HomeViewModel extends ViewModel {
 
     public HomeViewModel() {
         passwordsDB.clearPasswordsTrash();
-        loadPasswords();
     }
 
-    private void loadPasswords() {
+     void loadPasswords() {
         passwordsDB.loadCurrentUserPasswords(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {

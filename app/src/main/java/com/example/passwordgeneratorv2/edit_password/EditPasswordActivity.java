@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.passwordgeneratorv2.CustomDialogs;
+import com.example.passwordgeneratorv2.to_delete.CustomDialogs;
 import com.example.passwordgeneratorv2.R;
 import com.example.passwordgeneratorv2.constants.IntentTags;
 import com.example.passwordgeneratorv2.databinding.ActivityEditPasswordBinding;
@@ -82,7 +82,7 @@ public class EditPasswordActivity extends AppCompatActivity {
     private void showEditConfirmationDialog() {
         new CustomDialogs(this)
                 .setPassword(getNewPassword())
-                .setDialogType(CustomDialogs.EDIT_PASSWORD)
+                .setDialogType(CustomDialogs.EDIT_PASSWORD_DIALOG)
                 .showDialog();
 
         /*

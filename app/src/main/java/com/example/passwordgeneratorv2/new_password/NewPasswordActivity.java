@@ -2,11 +2,9 @@ package com.example.passwordgeneratorv2.new_password;
 
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,9 +13,13 @@ import com.example.passwordgeneratorv2.adapters.AdapterSpinnerSites;
 import com.example.passwordgeneratorv2.databinding.ActivityNewPasswordBinding;
 import com.example.passwordgeneratorv2.helpers.Base64H;
 import com.example.passwordgeneratorv2.helpers.PasswordGenerator;
+import com.example.passwordgeneratorv2.helpers.Security;
 import com.example.passwordgeneratorv2.helpers.ToastH;
 import com.example.passwordgeneratorv2.models.Password;
 import com.example.passwordgeneratorv2.models.WebsiteModel;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 
 public class NewPasswordActivity extends AppCompatActivity {
@@ -169,22 +171,11 @@ public class NewPasswordActivity extends AppCompatActivity {
     //Settar ClickListener para todos os componentes
     private void setClickListener() {
         binding.btnRegisterPassword.setOnClickListener(view -> {
-            WebsiteModel spinnerItem = (WebsiteModel) binding.spinnerSites.getSelectedItem();
-
-            String newSiteName;
-            String newSiteLink;
-            if (customItemSelected) {
-                newSiteName = binding.edtNewSiteName.getText().toString();
-                newSiteLink = binding.edtNewSiteLink.getText().toString();
-            } else {
-                newSiteName = spinnerItem.getSiteName();
-                newSiteLink = spinnerItem.getSiteLink();
-            }
-            String newPsswd = Base64H.encode(binding.edtGeneratedPassword.getText().toString());
-            String newIconLink = spinnerItem.getIconLink();
-
-            Password newPassword = new Password(newSiteName, newPsswd, newIconLink, newSiteLink);
-            model.registerPassword(newPassword);
+            if (Security.Companion.isAppUnlocked()) registerPassword();
+            else Security.Companion.unlockApp(this, () -> {
+                registerPassword();
+                return null;
+            });
         });
 
         binding.tilGeneratedPassword.setEndIconOnLongClickListener(v -> {
@@ -197,12 +188,24 @@ public class NewPasswordActivity extends AppCompatActivity {
         });
     }
 
-    //Opções Menu Toolbar
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
-        return super.onOptionsItemSelected(item);
-    }
+    private void registerPassword() {
+        WebsiteModel spinnerItem = (WebsiteModel) binding.spinnerSites.getSelectedItem();
 
+        String newSiteName;
+        String newSiteLink;
+        if (customItemSelected) {
+            newSiteName = binding.edtNewSiteName.getText().toString();
+            newSiteLink = binding.edtNewSiteLink.getText().toString();
+        } else {
+            newSiteName = spinnerItem.getSiteName();
+            newSiteLink = spinnerItem.getSiteLink();
+        }
+        String newPsswd = Base64H.encode(binding.edtGeneratedPassword.getText().toString());
+        String newIconLink = spinnerItem.getIconLink();
+
+        Password newPassword = new Password(newSiteName, newPsswd, newIconLink, newSiteLink);
+        model.registerPassword(newPassword);
+
+    }
 
 }

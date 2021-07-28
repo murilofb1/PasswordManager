@@ -7,7 +7,7 @@
     android:paddingEnd="20dp">
 
     <ImageView
-        android:id="@+id/img_icon_recycler"
+        android:id="@+id/imgRecyclerHomeIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
@@ -17,21 +17,21 @@
 
 
     <TextView
-        android:id="@+id/txt_name_recycler"
+        android:id="@+id/txtRecyclerHomeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_toEndOf="@id/img_icon_recycler"
+        android:layout_toEndOf="@id/imgRecyclerHomeIcon"
         android:text="facebook"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/txt_password_recycler"
+        android:id="@+id/txtRecyclerHomePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_name_recycler"
-        android:layout_alignStart="@id/txt_name_recycler"
+        android:layout_below="@+id/txtRecyclerHomeName"
+        android:layout_alignStart="@id/txtRecyclerHomeName"
         android:text="@string/masked_password" />
 
 

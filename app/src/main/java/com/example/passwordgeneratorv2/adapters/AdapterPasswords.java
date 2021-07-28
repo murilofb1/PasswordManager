@@ -1,4 +1,4 @@
-package com.example.passwordgeneratorv2.to_delete;
+package com.example.passwordgeneratorv2.adapters;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;

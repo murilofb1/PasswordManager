@@ -7,15 +7,22 @@ import androidx.lifecycle.MutableLiveData
 class Security {
     companion object {
         private val appUnlocked = MutableLiveData(true)
-        fun getAppUnlockStatus(): LiveData<Boolean> = appUnlocked
+        fun getUnlockStatus(): LiveData<Boolean> = appUnlocked
+        fun isAppUnlocked(): Boolean = appUnlocked.value!!
 
-        fun turnLock(bool: Boolean) {
-            appUnlocked.value = bool
+        fun lockApp() {
+            appUnlocked.value = false
         }
 
-        fun unlockApp(activity: FragmentActivity){
-            BiometricH.showUnlockBiometric(activity)
+       internal fun setUnlockStatus(value: Boolean) {
+            appUnlocked.value = value
         }
+
+        fun unlockApp(activity: FragmentActivity, void: (() -> Unit)? = null) {
+            BiometricH.showUnlockBiometric(activity, void)
+        }
+
+
 
     }
 }
