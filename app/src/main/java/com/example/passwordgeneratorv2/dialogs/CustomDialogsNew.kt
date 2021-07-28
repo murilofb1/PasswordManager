@@ -1,6 +1,7 @@
 package com.example.passwordgeneratorv2.dialogs
 
 import android.content.Context
+import android.net.Uri
 import androidx.appcompat.app.AlertDialog
 import com.example.passwordgeneratorv2.helpers.ToastH
 import com.example.passwordgeneratorv2.models.Password
@@ -17,4 +18,5 @@ open class CustomDialogsNew(context: Context) {
 
     fun create() = dialog
 
+    open fun setPassword(password: Password, iconUri: Uri?) {}
 }

@@ -14,6 +14,7 @@ object FirebaseKeys {
     //Icons
     const val CUSTOM_ICONS_KEY = "customIconsPath"
     const val DEFAULT_ICONS_KEY = "default_icons"
+    const val ICON_LINK_KEY = "iconLink"
 
 
 }

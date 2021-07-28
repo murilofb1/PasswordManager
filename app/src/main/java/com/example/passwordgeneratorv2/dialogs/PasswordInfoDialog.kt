@@ -19,12 +19,17 @@ import com.example.passwordgeneratorv2.helpers.ToastH
 import com.example.passwordgeneratorv2.models.Password
 import com.google.android.material.snackbar.Snackbar
 
-class EditPasswordDialog(private val context: Context) : CustomDialogsNew(context) {
+class PasswordInfoDialog(private val context: Context) : CustomDialogsNew(context) {
 
     override fun setPassword(password: Password) {
         this.password = password
         buildSnack()
         buildDialog()
+        ConfirmEditDialog.setOnButtonPressedListener(object : ConfirmEditDialog.OnOptionSelected {
+            override fun onPositivePressed() {
+                dialog.dismiss()
+            }
+        })
     }
 
     private fun buildDialog() {
@@ -69,6 +74,7 @@ class EditPasswordDialog(private val context: Context) : CustomDialogsNew(contex
             btnInfoEdit.setOnClickListener {
                 val i = Intent(context, EditPasswordActivity::class.java)
                 i.putExtra(IntentTags.EXTRA_PASSWORD, password!!)
+
                 context.startActivity(i)
             }
             btnInfoEdit.setOnLongClickListener {

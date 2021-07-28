@@ -36,6 +36,10 @@ public class WebsiteModel implements Serializable {
         return iconLink;
     }
 
+    public void setIconLink(String iconLink) {
+        this.iconLink = iconLink;
+    }
+
     public String getSiteLink() {
         return siteLink;
     }
